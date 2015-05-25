@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -26,13 +25,7 @@ SECRET_KEY = '=7kudp+9vm#lex7v(r0l&&l@6*j3$v8lno-a%m!_i-6t5cp+o+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-TEMPLATE_DIRS = (
-    "C:\Pythonnew34\Scripts\bookstore\bookstore\python_app\templates",
-)
-
-STATIC_URL = '/static/'
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -44,8 +37,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookstore.python_app',
-    'django.contrib.admindocs',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -79,17 +70,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bookstore.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-#using SID , not tns
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'xe',
+        'NAME': 'HR',
         'USER': 'HR',
         'PASSWORD': 'HR',
-        'HOST' : 'localhost',
-        'PORT' : '1521'
+        'HOST': 'localhost',
+        'PORT': '1521',
     }
 }
 
