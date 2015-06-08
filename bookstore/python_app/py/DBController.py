@@ -14,6 +14,9 @@ CHANGE_USER = 'UPDATE USERS SET USER_EMAIL =:uemail,USER_PHONE=:uphone,USER_ADDR
 ADD_BOOK = 'INSERT INTO BOOK(BOOK_TITLE,BOOK_PRICE,BOOK_AUTHOR,BOOK_PAGES,BOOK_PUBLISHER,BOOK_DESCRIPTION,CATEGORY_ID VALUES(:btitle,:bprice,:bauthor,:bpages,:bpublish,:bdesc,:bcategory)'
 GET_BOOK_FROM_DB = 'SELECT * FROM BOOK WHERE CATEGORY_ID=:category_id'
 GET_USER_ID = 'SELECT USER_ID FROM USERS WHERE USERNAME =:username AND USER_PASSWORD =:password'
+GET_USER_FROM_ID = 'SELECT * FROM USERS WHERE USER_ID=:id'
+GET_USER_LIKED_INFO = 'SELECT * FROM USER_LIKED_CATEGORIES WHERE USER_ID=:id'
+GET_USER_BOUGHT_INFO = 'SELECT * FROM USER_BOUGHT WHERE USER_ID = :id'
 
 class DBController:
 
@@ -50,6 +53,22 @@ class DBController:
                 return result[0]
         cur.close()
         db_connection.close()
+
+    def return_user_by_id(self,id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_USER_FROM_ID,id=id)
+        db_connection.commit()
+        for result in cur:
+            if result[1] is not None:
+                user = User(result[1], result[2], result[3], result[4], result[5], result[6])
+                cur.close()
+                db_connection.close()
+                return user
+            else:
+                cur.close()
+                db_connection.close()
+                return None
 
     # return None if there is not such user or returns the User if there is
     # such user
@@ -99,19 +118,37 @@ class DBController:
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
         cur.execute(GET_BOOK_FROM_DB, category_id=category_id)
+        db_connection.commit()
         for result in cur:
             book = Book(
                 result[1], result[2], result[3], result[4], result[5], result[6], result[7])
-        db_connection.commit()
-        cur.close()
         db_connection.close()
+        cur.close()
         return book
     # read certain book
 
-    # add recort to user liked
+    # add record to user liked
 
-    # get_record_from_user_liked()
+    def number_of_liked_product(self,user_id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_USER_LIKED_INFO,id =user_id)
+        db_connection.commit()
+        number_of_liked_products = 0
+        for result in cur:
+            number_of_liked_products += 1
+        cur.close()
+        db_connection.close()
+        return number_of_liked_products
 
-
-db = DBController()
-print(db.return_existing_user('ADMIN', 'ADMIN'))
+    def number_of_bought_items(self,user_id):
+        db_connection=self.__connect_to_db()
+        cur= db_connection.cursor()
+        cur.execute(GET_USER_BOUGHT_INFO,id=user_id)   
+        db_connection.commit()
+        number_of_bought_item = 0
+        for result in cur:
+            number_of_bought_item += 1
+        cur.close()
+        db_connection.close()
+        return number_of_bought_item

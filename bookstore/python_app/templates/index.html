@@ -6,6 +6,7 @@
 		<title>Book Store</title>
 		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
 		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
+		<link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}" >
 		<script src="{% static "js/jquery.min.js" %}"></script>
 		<script src="{% static "js/login_register.js"%}"></script>
 		<script src="{% static "js/bootstrap.min.js" %}"></script>
@@ -15,13 +16,13 @@
 <!-- Navigation Bar -->
 	<div class="navbar navbar-inverse navbar-static-top">
         <div class="container -fluid">
-			<div class = "navbar-header-inverse">
-				<button style="font-family:Gentium Basic;" type="button" class="btn navbar-brand navbar-btn" data-toggle="collapse" data-target=".navbar-collapse">
+			<div class = "navbar-header-inverse" data-toggle="collapse" data-target=".navbar-collapse">
+				<button type="button" class="index_button" data-toggle="collapse" data-target=".navbar-collapse" onclick="window.location.reload()" 
+  				 <img src='static/img/bookstore_logo.jpg' width='100' height='50'/>	
 				  <span class="icon-bar"></span>
 				  <span class="icon-bar"></span>
 				  <span class="icon-bar"></span>
-				  <font color="#428bca">Book Store</font> 
-				</button>	
+				</button>
 			</div>
 			
 			<!--Nav form with Search -->

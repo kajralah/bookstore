@@ -5,6 +5,11 @@ function signIn() {
 					if(data == 'Error login'){
 						window.location.replace("errorLoginPage.html")
 					}
+					else if(data == 'ADMIN'){
+						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
+						"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Add book</a>"+
+						"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>")
+					}
 					else{
 						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
 						"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Profile</a>"+
@@ -12,7 +17,8 @@ function signIn() {
 					}
 				}
 			);/*  END of POST request*/
-		}/*END of SEND REQUEST*/
+		}/*END of signIn*/
+
 
 function register() {
 		$.post("http://localhost:8000/register/", {'username':$("#username-reg").val(),
@@ -31,6 +37,47 @@ function register() {
 					else{
 						window.location.reload()
 					}
-				;}/* END OF .html */
+				}
 			);/*  END of POST request*/
-		}/*END of SEND REQUEST*/
+		}/*END of register*/
+
+function logout(){
+	$.post("http://localhost:8000/logout/", {},
+				function(data){
+					alert(data)
+					window.location.replace("index.html")
+				}
+			);/*  END of POST request*/
+		}/*END of logout*/
+
+function profile() {
+		$.post("http://localhost:8000/profile/", {},
+				function(data){
+					if (data=='You\'re not logged in'){
+						alert(data)
+						window.location.replace("index.html")
+					}
+					else{
+						var values=data.split(',');	
+						$("#home").replaceWith("<div align=\"right\"><h2 align=\"center\">User info</h2><div align=\"center\"><br><br> Email: <p>"+values[0]+"</p>Address : <p>"+values[1]+"</p>Phone: <p>"+values[2]+"</p></div></div>");
+					}
+
+				}
+			);/*  END of POST request*/
+		}/*END of register*/
+
+function liked_products(){
+	$.post("http://localhost:8000/liked/", {},
+				function(data){
+					if (data=='You\'re not logged in'){
+						alert(data)
+						window.location.replace("index.html")
+					}
+					else{
+						var values = data.split(',')
+						$("#Liked").append("<p align=\"center\">"+values[0]+"</p>");
+						$('#Bought').append("<p align=\"center\">"+values[1]+"</p>");
+						}
+				}
+			);/*  END of POST request*/
+}

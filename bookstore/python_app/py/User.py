@@ -1,14 +1,39 @@
-#from Exceptions import *
+from bookstore.python_app.py.Exceptions import *
 
 class User:
 
     def __init__(self,username,password,email,address,phone,user_type):
-        self.username = username
-        self.password = password
-        self.email = email
-        self.address = address
-        self.phone = phone
-        self.user_type = user_type
+        self.__username = username
+        self.__password = password
+        self.__email = email
+        self.__address = address
+        self.__phone = phone
+        self.__user_type = user_type
+
+    @property
+    def username(self):
+        return self.__username
+
+    @property     
+    def password(self):
+        return self.__password
+
+    @property
+    def email(self):
+        return self.__email
+
+    @property    
+    def address(self):
+        return self.__address
+
+    @property    
+    def phone(self):
+        return self.__phone
+
+    @property
+    def user_type(self):
+        return self.__user_type
+
 
     #return True if password is correct , else raise exception
     @staticmethod
