@@ -17,17 +17,12 @@
 <!-- Navigation Bar -->
 	<div class="navbar navbar-inverse navbar-static-top">
         <div class="container -fluid">
-			<div class = "navbar-header-inverse">
-				<button style="font-family:Gentium Basic;" type="button" class="btn navbar-brand navbar-btn" data-toggle="collapse" data-target=".navbar-collapse" onclick="location.href='index.html'">
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-				  <font color="#428bca">Book Store</font> 
-				</button>	
-			</div>
+                        <div class = "navbar-header-inverse">
+                       		 <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
+                        </div>
 
 			 			 <!--Log out buttons -->
-			<div class = "navbar-collapse collapse" >
+			<div class = "navbar-collapse collapse" id="login">
 				<ul class="nav navbar-nav navbar-right">
 					<li>
 						<a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>

@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>BookStore</title>
+		<meta charset="utf-8">
+		{% load staticfiles %}
+		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
+		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
+		<link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}">
+		<script src="{% static "js/jquery.min.js" %}"></script>
+		<script src="{% static "js/login_register.js"%}"></script>
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
+	</head>
+
+<body onload="addCategories()">
+
+<!-- Navigation Bar -->
+	<div class="navbar navbar-inverse navbar-static-top">
+        <div class="container -fluid">
+                        <div class = "navbar-header-inverse">
+                       		 <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
+                        </div>
+
+			 			 <!--Log out buttons -->
+			<div class = "navbar-collapse collapse" >
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
+				  </ul>
+			</div>	
+		</div>
+    </div>
+	
+		<div class="container">
+	
+		<div>
+			<form method="post" enctype="multipart/form-data" action="book">
+		<div>
+			<div>
+				<div>
+					<h1 class="modal-title text-center">New Product</h1><br>
+				</div>
+					<div>
+							 <!-- Name of the product-->
+						<div class="control-group text-center">
+								<label class="control-label" for="textinput">Name of book:</label>
+								<div class="controls">
+								  <input id="prod-name-reg" name="name-input" type="text" placeholder="" class="input-medium">
+								</div>
+								<br/>
+						  <!-- Price of the product-->
+							<label class="control-label" for="textinput">Price of the book:</label>
+							<div class="controls">
+							  <input id="prod-price-reg" name="price-input" type="text" placeholder="" class="input-medium">
+							</div>
+
+						<br>
+						  <!-- Description of Product-->
+							<label class="control-label" for="textinput">Product description:</label>
+							<div class="controls">
+							<textarea id="prod-descr-reg" name="desc-input" placeholder="" class="input-medium"></textarea>
+							</div>
+							<br/>
+
+							<label class="control-label" for="textinput">Author of the book:</label>
+							<div class="controls">
+							  <input id="prod-author-reg" name="author-input" type="text" placeholder="" class="input-medium">
+							</div>
+
+							<br>	
+							<label class="control-label" for="textinput">Pages of the book:</label>
+							<div class="controls">
+							  <input id="prod-pages-reg" name="pages-input" type="text" placeholder="" class="input-medium">
+							</div>
+							<br>
+							<label class="control-label" for="textinput">Publisher of the book:</label>
+							<div class="controls">
+							  <input id="prod-publisher-reg" name="publisher-input" type="text" placeholder="" class="input-medium">
+							</div>
+							<br>
+
+							<label class="control-label" for="textinput">Categories:</label>
+							<div class="controls" id="prod-categories-reg">
+							</div>
+							 <br>
+							<br>
+						  <!-- Drag and Drop for images-->
+					    <input type="file" name="myfile" />
+						</div>
+						<br/>
+						<br>
+						<div class="modal-footer">
+							<input type="submit" class="btn btn-success" value="Submit" />
+							<input type="submit" class="btn btn-success" type="reset" value="Refresh Form" />
+							<input type="submit" class="btn btn-success" type="submit" onclick="go_to_home_page()" value="Cancel" />
+					    </div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+	</body>
+</html>
