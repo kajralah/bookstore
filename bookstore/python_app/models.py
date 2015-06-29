@@ -14,7 +14,7 @@ from django.db import models
 
 class Book(models.Model):
     book_id = models.FloatField(primary_key=True)
-    book_img = models.BinaryField(blank=True, null=True)
+    book_img = models.CharField(max_length=100)
     book_title = models.CharField(max_length=100)
     book_price = models.FloatField()
     book_author = models.CharField(max_length=100)

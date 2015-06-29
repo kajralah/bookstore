@@ -19,5 +19,11 @@ urlpatterns = [
     url(r'^logout', logout),
     url(r'^profile-settings.html',TemplateView.as_view(template_name='profile-settings.html')),
     url(r'^profile', profile),
-    url(r'^liked',num_of_liked_products)
+    url(r'^liked',num_of_liked_products),
+    url(r'^book',add_book),
+    url(r'^newBook.html',TemplateView.as_view(template_name='newBook.html')),
+    url(r'^categories',get_categories),
+    url(r'^show_book',show_book),
+    url(r'^showProduct',show_product),
+    #url(r'^index',index),
 ]
