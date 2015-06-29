@@ -8,8 +8,6 @@ from bookstore.python_app.py.Book import *
 from io import BytesIO
 from PIL import Image
 from django.shortcuts import render_to_response
-import datetime
-
 
 class IndexView(TemplateView):
     template_name = 'index.html'
