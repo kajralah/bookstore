@@ -1,7 +1,7 @@
 import cx_Oracle
-#from bookstore.python_app.py.User import *
-#from bookstore.python_app.py.Exceptions import *
-#from bookstore.python_app.py.Book import *
+from bookstore.python_app.py.User import *
+from bookstore.python_app.py.Exceptions import *
+from bookstore.python_app.py.Book import *
 
 
 DB_name = 'HR'
@@ -20,8 +20,10 @@ GET_USER_BOUGHT_INFO = 'SELECT * FROM USER_BOUGHT WHERE USER_ID = :id'
 GET_CATEGORIES = 'SELECT CATEGORY_NAME FROM CATEGORIES'
 GET_CATEGORIES_BY_NAME = 'SELECT CATEGORY_ID FROM CATEGORIES WHERE CATEGORY_NAME LIKE :category_name'
 GET_BOOK_FOR_SHOW ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK'
-GET_BOOK_ID_BY_NAME='SELECT BOOK_ID FROM BOOK WHERE BOOK_NAME LIKE :book_name'
+GET_BOOK_ID_BY_NAME='SELECT BOOK_ID FROM BOOK WHERE BOOK_TITLE LIKE :book_title'
 GET_BOOK_BY_ID='SELECT * FROM BOOK WHERE BOOK_ID=:book_id'
+GET_CATEGORIE_NAME_BY_ID = 'SELECT CATEGORY_NAME FROM CATEGORIES WHERE CATEGORY_ID LIKE :category_id'
+INSERT_LIKED_CATEGORY = 'INSERT INTO USER_LIKED_CATEGORIES(USER_ID,CATEGORY_ID) VALUES(:user_id,:category_id)'
 
 class DBController:
 
@@ -179,17 +181,17 @@ class DBController:
         db_connection.close()
         return list_of_book
 
-    def get_book_id_by_name(self,name):
+    def get_book_id_by_title(self,title):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_BOOK_ID_BY_NAME,book_name=name)
+        cur.execute(GET_BOOK_ID_BY_NAME,book_title=title)
         db_connection.commit()
-        id=0
+        book_id=0
         for result in cur:
-            id = result
+            book_id = result[0]
         cur.close()
         db_connection.close()
-        return id
+        return book_id
 
     def get_book_by_id(self,id):
         db_connection = self.__connect_to_db()
@@ -199,4 +201,19 @@ class DBController:
         for result in cur:
             book=Book(result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8])
         return book
-    # add record to user liked
+    
+    def get_categorie_by_id(self,id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_CATEGORIE_NAME_BY_ID,category_id=id)
+        db_connection.commit()
+        for result in cur:
+            category_name = result[0]
+        return category_name
+
+    def insert_into_liked_categories(self,user_id,category_name):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(INSERT_LIKED_CATEGORY,user_id = user_id,category_id=get_category_id_by_name(category_name))
+        db_connection.commit()
+        return True

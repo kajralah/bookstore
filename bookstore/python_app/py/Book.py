@@ -19,26 +19,34 @@ class Book:
         else:
             raise InvalidBookException()
 
+    @property
     def book_title(self):
         return self.__book_title
 
+    @property
     def book_price(self):
         return self.__book_price
 
+    @property
     def book_author(self):
         return self.__book_author
     
+    @property
     def book_pages(self):
         return self.__book_pages
 
+    @property
     def book_publisher(self):
         return self.__book_publisher
 
+    @property
     def book_description(self):
         return self.__book_description
 
+    @property
     def book_category(self):
         return self.__book_category
 
+    @property
     def book_image(self):
         return self.__book_image    

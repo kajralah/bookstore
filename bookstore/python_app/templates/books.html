@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Book</title>
+{% load staticfiles %}
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "js/books.js"%}"></script>
+</head>
+
+<body onload="getBookInfo()" id="body">
+
+		<h1 id="th" align="center"></h1>
+<div>
+<div style="float:left;padding-left: 4cm;">
+
+	<p align="center">
+	<b>Book title : <i id="title"></i></b></p>
+	<p align="center">
+	<b>Price : <i id="price"></i></b></p>
+	<p align="center">
+	<b>Author : <i id="author"></i></b></p>
+	<p align="center">
+	<b>Pages : <i id="pages"></i></b></p>
+	<p align="center">
+	<b>Publisher : <i id="publisher"></i></b></p>
+	<p align="center">
+	<b>Description : <i id="description"></i></b></p>
+	<p align="center">
+	<b>Category : <i id="category"></i></b></p>
+
+</div>
+<br><br><br>
+<div style="padding-left: 4cm;margin-top:-1.5cm" >
+	<p id="image" align="center"></p>
+</div>
+</div>
+<div align="center">
+	<button style="width: 10em;  height: 2em;" onclick="Like()">Like!</button>
+	<button style="width: 10em;  height: 2em;" onclick="Buy()">Buy</button>
+</div>
+</body>
+</html>

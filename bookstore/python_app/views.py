@@ -8,6 +8,7 @@ from bookstore.python_app.py.Book import *
 from io import BytesIO
 from PIL import Image
 from django.shortcuts import render_to_response
+from django.template.response import TemplateResponse
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -82,6 +83,7 @@ def profile(request):
     else:
         return HttpResponse(user.email+','+user.address+','+user.phone)
 
+
 @csrf_exempt
 def num_of_liked_products(request):
     db=DBController()
@@ -95,7 +97,6 @@ def num_of_liked_products(request):
         result = str(number_of_liked_product)+','+str(number_of_bougth_product)
         return HttpResponse(result)
 
-#category should be entered
 @csrf_exempt
 def add_book(request):
     title = request.POST['name-input']
@@ -104,6 +105,7 @@ def add_book(request):
     author = request.POST['author-input']
     pages = request.POST['pages-input']
     publisher = request.POST['publisher-input']
+    category = request.POST['category-input']
     image = request.FILES['myfile']
     
     image_name = title
@@ -115,10 +117,12 @@ def add_book(request):
         destination.write(chunk)
     destination.close()
 
-    category = 1
     db = DBController()
-    db.add_book_to_db(title,price,author,pages,image_name+image_extension,publisher,description,1)
-    return render_to_response('index.html')
+    db.add_book_to_db(title,price,author,pages,image_name+image_extension,
+        publisher,description,db.get_category_id_by_name(category))
+
+    return HttpResponseRedirect("index.html") 
+
 
 @csrf_exempt
 def get_categories(request):
@@ -134,12 +138,21 @@ def show_book(request):
 
 @csrf_exempt
 def show_product(request):
-    name = request.POST['name']
+    title = request.POST['title']
     db=DBController()
-    id = db.get_book_id_by_name(name)
-    book = db.get_book_by_id(id)
-    list_of_book = []
+    book_id = db.get_book_id_by_title(title)
+    book = db.get_book_by_id(book_id)
+    list_of_book =[book.book_title,book.book_price,book.book_author,book.book_pages]
+    list_of_description = [book.book_publisher,book.book_description,
+    db.get_categorie_by_id(book.book_category),book.book_image]
+    list_of_book.extend(list_of_description)
+    list_of_book_description = [str(book_element) + "," for book_element in list_of_book]
+    return HttpResponse(list_of_book_description)
 
-    list_of_book.append(book.book_title)
-    
-    return HttpResponse(list_of_book)
+@csrf_exempt
+def like_book(request):
+    user_id = request.session['user_id']
+    category_name = request.POST['category']
+    db = DBController()
+    db.insert_into_liked_categories(user_id,category_name)
+    return HttpResponse(status=200)

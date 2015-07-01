@@ -129,14 +129,11 @@ function categories(){
 			);/*  END of POST request*/
 }
 
-function cat(index){
-	alert(index)	
-}
-
 function All(){
 	categories();
 	showBook()
 }
+
 function showBook(){
 	$.post("http://localhost:8000/show_book/", {},
 		function(data){	
@@ -148,16 +145,16 @@ function showBook(){
 
 			$("#tbody").append("<tr>");
 			for(var index=0;index<values.length-1;index++){
-				if(index==4){
+				if(index%4==0){
 					$("#tbody").append("<tr>");
 				}
 				
 				var varu = values[index]
-				varus = varu.split(',')
+				varus = varu.split(',');
 				img = varus[varus.length-1]
 				img = img.substring(2, img.length - 1);
 
-				$("#tbody").append("<td valign=\"top\" align=\"center\" width=\"20%\" class=\"product-td\"><div align=\"center\">"+
+				$("#tbody").append("<td valign=\"top\" align=\"center\" width=\"30%\" class=\"product-td\"><div align=\"center\">"+
                    "<h2 align=\"center\">"+varus[0].substring(2,varus[0].length-1)+"</h2>"+
                 "<img src=\"static/img/"+img+"\" width=\"140\" height=\"140\" alt=\"\" style=\"display:block;\"/>"+
                 "<p align=\"center\"><h4 align=\"center\">Price: "+ varus[1]+ " BGN<h4> <button onclick=\"showProduct("+varus[0].substring(1,varus[0].length)+")\"> View </button></p>"+"</div></td>");
@@ -181,6 +178,7 @@ function addCategories(){
 						array[index]=array[index].replace(/'/g, '');
 						$("#prod-categories-reg").append("<a style=\"font-size:20px;\" onclick=\"setCategories("+element+")\">"+array[index]+"</a><br>");
 					}
+
 					splited_values.forEach(splitvar);
 				}
 			);/*  END of POST request*/
@@ -189,11 +187,6 @@ function setCategories(index){
 	$("#prod-categories-reg").append("<input type=\"text\" name=\"category-input\" value=\""+index+ "\" />	")
 }
 
-function showProduct(name){
-	$.post("http://localhost:8000/showProduct/", {'name':name},
-				function(data){		
-					alert(data)	
-				
-				}
-			);/*  END of POST request*/
+function showProduct(title){
+	window.open("http://localhost:8000/books?title="+title);
 }
