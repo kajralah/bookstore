@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^showProduct',show_product),
     url(r'^books/$',TemplateView.as_view(template_name='books.html')),
     url(r'^likeProduct',like_book),
+    url(r'^buyProduct',buy_book),
     #url(r'^index',index),
 ]

@@ -58,7 +58,7 @@ def register(request):
         return HttpResponse('Wrong password')
     else:
         try:
-            db.add_user_to_db(username, password, address, phone, email, 'F')
+            db.add_user_to_db(username, password, address, phone, email)
             return HttpResponse('Registration complete')
         except ExistingUserException:
             return HttpResponse('User exists')
@@ -151,8 +151,24 @@ def show_product(request):
 
 @csrf_exempt
 def like_book(request):
+    db = DBController()
     user_id = request.session['user_id']
     category_name = request.POST['category']
-    db = DBController()
-    db.insert_into_liked_categories(user_id,category_name)
-    return HttpResponse(status=200)
+    book_title = request.POST['title']
+    try:
+        db.insert_into_user_liked_books(user_id,book_title)
+        db.insert_into_liked_categories(user_id,category_name)
+        return HttpResponse('True')
+    except cx_Oracle.IntegrityError:
+        return HttpResponse('False')
+
+@csrf_exempt
+def buy_book(request):
+    db=DBController()
+    user_id = request.session['user_id']
+    book_title = request.POST['title']
+    try:
+        db.insert_into_user_bought(user_id,book_title)
+        return HttpResponse('True')
+    except cx_Oracle.IntegrityError:
+        return HttpResponse('False')

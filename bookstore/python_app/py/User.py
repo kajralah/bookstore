@@ -2,13 +2,12 @@ from bookstore.python_app.py.Exceptions import *
 
 class User:
 
-    def __init__(self,username,password,email,address,phone,user_type):
+    def __init__(self,username,password,email,address,phone):
         self.__username = username
         self.__password = password
         self.__email = email
         self.__address = address
         self.__phone = phone
-        self.__user_type = user_type
 
     @property
     def username(self):
@@ -29,11 +28,6 @@ class User:
     @property    
     def phone(self):
         return self.__phone
-
-    @property
-    def user_type(self):
-        return self.__user_type
-
 
     #return True if password is correct , else raise exception
     @staticmethod

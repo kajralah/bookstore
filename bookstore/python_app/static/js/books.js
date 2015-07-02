@@ -31,12 +31,35 @@
 				});
 			}
 
-            // NEED TO FIX
-            /*function Like(){
-                var title = $('#category').html();
-                $.post("http://localhost:8000/likeProduct",{'category':category},
+            function Like(){
+                var category = $('#category').html();
+                var title = $('#title').html();
+                $.post("http://localhost:8000/likeProduct",{'category':category,'title':title},
                     function(data){
-                      $('#body').empty();
-                      window.location.load("index.html");
-                });
-            }*/
+                        if(data === 'True'){
+                            $('#likeInfo').append("Thank you for liking !");
+                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                        }
+                        else if (data === 'False'){
+                            $('#likeInfo').append("You have already liked it!");
+                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                        }
+                    });
+            }
+
+            function Buy(){
+                var title = $('#title').html();
+                $.post("http://localhost:8000/buyProduct",{'title':title},
+                    function(data){
+                         if(data === 'True'){
+                            $('#likeInfo').append("Thank you for buying !");
+                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                        }
+                        else if (data === 'False'){
+                            $('#likeInfo').append("You have already bought it!");
+                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                        }
+
+                    }
+                );
+            }
