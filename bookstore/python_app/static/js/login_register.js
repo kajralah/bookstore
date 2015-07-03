@@ -1,11 +1,15 @@
 STATIC_URL = '/static/'
 
+function go_to_home_page(){
+	window.location.href = "\index.html";
+}
+
 function signIn() {
 		$.post("http://localhost:8000/login/", {'name':$("#username").val(),
 				'password':$("#password").val(),'check':document.getElementById("remember").checked,'csrfmiddlewaretoken':$('#csrfmiddlewaretoken').val()},
 				function(data){
 					if(data == 'Error login'){
-						window.location.load("errorLoginPage.html")
+						window.location.load("\errorLoginPage.html")
 					}
 					else if(data == 'ADMIN'){
 						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" id=\"login\"><ul class=\"nav navbar-nav navbar-right\">"+
@@ -13,7 +17,7 @@ function signIn() {
 						"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>")
 					}
 					else if(data == 'false'){
-						window.location.load("index.html")
+						go_to_home_page();
 					}
 					else{
 						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
@@ -33,7 +37,7 @@ function index(){
 						"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>")
 			}
 			else if (data ='None'){
-				window.location.load('index.html')
+				go_to_home_page();
 			}
 			else{
 				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
@@ -49,17 +53,17 @@ function register() {
 				'password':$("#password-reg").val(),'address':$("#address-reg").val(),'phone':$("#phone-reg").val(),
 				'email':$("#email-reg").val(),'csrfmiddlewaretoken':$('#csrfmiddlewaretoken-reg').val()},
 				function(data){
-					alert(data)
+					alert(data);
 					if(data == 'Wrong password'){
-						alert(data)
+						alert(data);
 						document.getElementById("registerForm").reset();
 					}
 					if(data == 'User exists'){
-						alert(data)
-						window.location.reload()
+						alert(data);
+						window.location.reload();
 					}
 					else{
-						window.location.reload()
+						window.location.reload();
 					}
 				}
 			);/*  END of POST request*/
@@ -68,22 +72,36 @@ function register() {
 function logout(){
 	$.post("http://localhost:8000/logout/", {},
 				function(data){
-					alert(data)
-					window.location.replace("index.html")
+					alert(data);
+					go_to_home_page();
 				}
 			);/*  END of POST request*/
 		}/*END of logout*/
+
+function loadProfile(){
+		$.post("http://localhost:8000/isLoggedUser/", {},
+			function(data){
+				if(data === 'False'){
+					go_to_home_page();
+				}
+				else{
+					profile();
+				}
+			}
+		);
+}
+
 
 function profile() {
 		$.post("http://localhost:8000/profile/", {},
 				function(data){
 					if (data=='You\'re not logged in'){
-						alert(data)
-						window.location.replace("index.html")
+						alert(data);
+						go_to_home_page();
 					}
 					else{
 						var values=data.split(',');	
-						$("#home").replaceWith("<div align=\"right\"><h2 align=\"center\">User info</h2><div align=\"center\"><br><br> Email: <p>"+values[0]+"</p>Address : <p>"+values[1]+"</p>Phone: <p>"+values[2]+"</p></div></div>");
+						$("#home").replaceWith("<div align=\"right\"><h2 align=\"center\">User info</h2><div align=\"center\"><br><br> Email: <p>"+values[2]+"</p>Address : <p>"+values[0]+"</p>Phone: <p>"+values[1]+"</p></div></div>");
 					}
 
 				}
@@ -94,8 +112,7 @@ function liked_products(){
 	$.post("http://localhost:8000/liked/", {},
 				function(data){
 					if (data=='You\'re not logged in'){
-						alert(data)
-						window.location.replace("index.html")
+						go_to_home_page();
 					}
 					else{
 						var values = data.split(',')
@@ -106,18 +123,14 @@ function liked_products(){
 			);/*  END of POST request*/
 }
 
-function go_to_home_page(){
-	window.location.href = "index.html";
-}
-
 function categories(){
 	$.post("http://localhost:8000/categories/", {},
 				function(data){			
 
 					// Remove the parentheses and whitespace
-					values = data.replace(/[() ]/g,'')
+					values = data.replace(/[() ]/g,'');
 
-					var splited_values =values.split(',')
+					var splited_values =values.split(',');
 
 					function splitvar(element,index,array){
 						array.pop();
@@ -131,7 +144,7 @@ function categories(){
 
 function All(){
 	categories();
-	showBook()
+	showBook();
 }
 
 function showBook(){
@@ -141,7 +154,7 @@ function showBook(){
 			if(data == '' || data == null){
 				return;
 			}
-			var values = data.split('),')
+			var values = data.split('),');
 
 			$("#tbody").append("<tr>");
 			for(var index=0;index<values.length-1;index++){
@@ -151,7 +164,7 @@ function showBook(){
 				
 				var varu = values[index]
 				varus = varu.split(',');
-				img = varus[varus.length-1]
+				img = varus[varus.length-1];
 				img = img.substring(2, img.length - 1);
 
 				$("#tbody").append("<td valign=\"top\" align=\"center\" width=\"30%\" class=\"product-td\"><div align=\"center\">"+
@@ -164,14 +177,27 @@ function showBook(){
 )//end of post
 }//show_book
 
+function addNewBook(){
+	$.post("http://localhost:8000/is_supervisor/", {},
+		function(data){
+			if(data === 'False'){
+				go_to_home_page();
+			}
+			else{
+				addCategories();
+			}
+		}
+	);/*END OF POST */
+}/*END OF addNewBook() */
+
 function addCategories(){
 	$.post("http://localhost:8000/categories/", {},
 				function(data){			
 
 					// Remove the parentheses and whitespace
-					values = data.replace(/[() ]/g,'')
+					values = data.replace(/[() ]/g,'');
 
-					var splited_values =values.split(',')
+					var splited_values =values.split(',');
 
 					function splitvar(element,index,array){
 						array.pop();
@@ -183,6 +209,8 @@ function addCategories(){
 				}
 			);/*  END of POST request*/
 }
+
+
 function setCategories(index){
 	$("#prod-categories-reg").append("<input type=\"text\" name=\"category-input\" value=\""+index+ "\" />	")
 }
@@ -190,3 +218,21 @@ function setCategories(index){
 function showProduct(title){
 	window.open("http://localhost:8000/books?title="+title);
 }
+
+/*function Change(){
+	$.post("http://localhost:8000/profile/", {},
+				function(data){
+					if (data=='You\'re not logged in'){
+						alert(data);
+						go_to_home_page();
+					}
+					else{
+						var values=data.split(',');	
+						$("#email").replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[2]+"\">");
+						$('#address').replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[0]+"\">");
+						$('#phone').replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[1]+"\">");
+					}
+
+				}
+			);/*  END of POST request*/
+}*/

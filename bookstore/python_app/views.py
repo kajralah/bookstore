@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from bookstore.python_app.py.DBController import *
 from bookstore.python_app.py.Book import *
+from bookstore.python_app.py.User import *
 from io import BytesIO
 from PIL import Image
 from django.shortcuts import render_to_response
@@ -30,20 +31,6 @@ def login(request):
     else:
         request.session['user_id'] = db.get_user_id(username, password)
         return HttpResponse('Welcome')
-
-#@csrf_exempt
-#def index(request):
-#    if request is not None:
-#        if request.session['user_id'] is not None:
-#            user_id = request.session['user_id']
-#            db = DBController()
-#            user = db.return_user_by_id(user_id)
-#            if user.username == 'ADMIN':
-#                return HttpResponse('ADMIN')
-#            else :
-#                return HttpResponse('Welcome')
-#    else: 
-#        HttpResponse('None')
 
 @csrf_exempt
 def register(request):
@@ -71,31 +58,71 @@ def logout(request):
         return HttpResponse("You're not logged in")
     return HttpResponse("You're logged out.")
 
+@csrf_exempt
+def isLoggedUser(request):
+    try:
+        user_id = request.session['user_id']
+        return HttpResponse(user_id)
+    except KeyError:
+        return HttpResponse('False')
 
 
 @csrf_exempt
 def profile(request):
     db = DBController()
-    user_id = request.session['user_id']
-    user = db.return_user_by_id(user_id)
-    if user is None:
+    try:
+        user_id = request.session['user_id']
+        user = db.return_user_by_id(user_id)
+        if user is None:
+            return HttpResponse("You're not logged in")
+        else:
+            return HttpResponse(user.email+','+user.address+','+user.phone)
+    except KeyError:
         return HttpResponse("You're not logged in")
-    else:
-        return HttpResponse(user.email+','+user.address+','+user.phone)
 
 
 @csrf_exempt
 def num_of_liked_products(request):
     db=DBController()
-    user_id = request.session['user_id']
-    user = db.return_user_by_id(user_id)
-    if user is None:
+    try:
+        user_id = request.session['user_id']
+        user = db.return_user_by_id(user_id)
+        if user is None:
+            return HttpResponse("You're not logged in")
+        else:
+            number_of_liked_product = db.number_of_liked_product(user_id)
+            number_of_bougth_product = db.number_of_bought_items(user_id)
+            result = str(number_of_liked_product)+','+str(number_of_bougth_product)
+            return HttpResponse(result)
+    except KeyError:
         return HttpResponse("You're not logged in")
-    else:
-        number_of_liked_product = db.number_of_liked_product(user_id)
-        number_of_bougth_product = db.number_of_bought_items(user_id)
-        result = str(number_of_liked_product)+','+str(number_of_bougth_product)
-        return HttpResponse(result)
+
+
+@csrf_exempt
+def add_book(request):
+    title = request.POST['name-input']
+    price = request.POST['price-input']
+    description = request.POST['desc-input']
+    author = request.POST['author-input']
+    pages = request.POST['pages-input']
+    publisher = request.POST['publisher-input']
+    category = request.POST['category-input']
+    image = request.FILES['myfile']
+    
+    image_name = title
+    image_folder = 'bookstore\python_app\static\img'
+    image_extension = '.jpg'
+
+    destination = open(image_folder+'\\'+image_name+image_extension, 'wb+')
+    for chunk in image.chunks():
+        destination.write(chunk)
+    destination.close()
+
+    db = DBController()
+    db.add_book_to_db(title,price,author,pages,image_name+image_extension,
+        publisher,description,db.get_category_id_by_name(category))
+
+    return HttpResponseRedirect('index.html') 
 
 
 @csrf_exempt
@@ -126,23 +153,52 @@ def show_product(request):
 @csrf_exempt
 def like_book(request):
     db = DBController()
-    user_id = request.session['user_id']
-    category_name = request.POST['category']
-    book_title = request.POST['title']
     try:
+        user_id = request.session['user_id']
+        category_name = request.POST['category']
+        book_title = request.POST['title']
         db.insert_into_user_liked_books(user_id,book_title)
         db.insert_into_liked_categories(user_id,category_name)
         return HttpResponse('True')
-    except cx_Oracle.IntegrityError:
-        return HttpResponse('False')
+    except (cx_Oracle.IntegrityError,KeyError):
+        HttpResponse('False')
 
 @csrf_exempt
 def buy_book(request):
     db=DBController()
-    user_id = request.session['user_id']
-    book_title = request.POST['title']
     try:
+        user_id = request.session['user_id']
+        book_title = request.POST['title']
         db.insert_into_user_bought(user_id,book_title)
         return HttpResponse('True')
-    except cx_Oracle.IntegrityError:
+    except (cx_Oracle.IntegrityError,KeyError):
         return HttpResponse('False')
+
+
+@csrf_exempt
+def is_supervisor(request):
+    db = DBController()
+    try:
+        user_id = request.session['user_id']
+        is_supervisor = db.is_supervisor(user_id)
+        return HttpResponse(is_supervisor)
+    except KeyError:
+        return HttpResponse('False')
+
+@csrf_exempt
+def changeProfile(request):
+    db=DBController()
+    user_id = request.session['user_id']
+    email = request.POST['email']
+    address = request.POST['address']
+    phone = request.POST['phone']
+    password = request.POST['password']
+    repeated_pass = request.POST['password2']
+    try:
+        result = User.is_password_correct(password)
+    except IncorrectPasswordException:
+        return HttpResponse('Incorrect Password')
+    if password != repeated_pass:
+        return HttpResponse('Password don\'t match')
+    db.change_user(user_id,password,email,address,phone)
+    return HttpResponseRedirect('index.html')

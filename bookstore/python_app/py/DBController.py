@@ -10,7 +10,7 @@ DB_host = 'localhost'
 DB_connection = DB_name + '/' + DB_password + '@' + DB_host
 INSERT_USER_TO_DB = 'INSERT INTO USERS(USERNAME,USER_PASSWORD,USER_EMAIL,USER_ADDRESS,USER_PHONE,IS_SUPERVISOR) VALUES (:uname,:upass,:uemail,:uaddress,:uphone,:usupervisor)'
 FIND_USER_IN_DB = 'SELECT* FROM USERS WHERE USERNAME= :uname AND USER_PASSWORD= :upass'
-CHANGE_USER = 'UPDATE USERS SET USER_EMAIL =:uemail,USER_PHONE=:uphone,USER_ADDRESS=:uaddress,USER_PASSWORD=:upass WHERE USERNAME =:uname'
+CHANGE_USER = 'UPDATE USERS SET USER_EMAIL =:uemail,USER_PHONE=:uphone,USER_ADDRESS=:uaddress,USER_PASSWORD=:upass WHERE USER_ID =:user_id'
 ADD_BOOK = 'INSERT INTO BOOK(BOOK_TITLE,BOOK_PRICE,BOOK_AUTHOR,BOOK_PAGES,BOOK_PUBLISHER,BOOK_DESCRIPTION,BOOK_IMG,CATEGORY_ID) VALUES(:btitle,:bprice,:bauthor,:bpages,:bpublish,:bdesc,:bimg,:bcategory)'
 GET_BOOK_FROM_DB = 'SELECT * FROM BOOK WHERE CATEGORY_ID=:category_id'
 GET_USER_ID = 'SELECT USER_ID FROM USERS WHERE USERNAME =:username AND USER_PASSWORD =:password'
@@ -101,11 +101,11 @@ class DBController:
 
     # the password is checked and the existing of the user is checked before invoking this function
     # returns True if user is changed else raise cx_ORacle.IntegrityError
-    def change_user(self, username, password, email, address, phone):
+    def change_user(self, user_id, password, email, address, phone):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
         cur.execute(CHANGE_USER, uemail=email, uphone=phone,
-                    uaddress=address, upass=password, uname=username)
+                    uaddress=address, upass=password, user_id=user_id)
         db_connection.commit()
         cur.close()
         db_connection.close()

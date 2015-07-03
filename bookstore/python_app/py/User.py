@@ -1,4 +1,5 @@
 from bookstore.python_app.py.Exceptions import *
+from bookstore.python_app.py.DBController import *
 
 class User:
 

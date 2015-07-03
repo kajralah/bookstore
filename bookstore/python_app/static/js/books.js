@@ -11,7 +11,7 @@
             }
             function getUrlData() {
                 var parameter = getParameter("title");
-				return parameter;	
+				return parameter;
             }
 
             function getBookInfo(){
@@ -46,21 +46,38 @@
                     function(data){
                         if(data === 'True'){
                             $('#likeInfo').append("Thank you for liking !");
-                            $('#likeInfo').append("<a href=\"index.html\"> Back to homepage!</a>");
+                            $('#likeInfo').append("<a href=\"\index.html\"> Back to homepage!</a>");
                         }
                         else{
                             $('#likeInfo').append("You have already liked it!");
-                            $('#likeInfo').append("<a href=\"index.html\"> Back to homepage!</a>");
+                            $('#likeInfo').append("<a href=\"\index.html\"> Back to homepage!</a>");
                         }
                     });
             }
 
+function go_to_home_page(){
+    window.location.href = "/index.html";
+}
         function Buy(){
             var title = $('#title').html();
             window.open("http://localhost:8000/buyBook?title="+title);
         }
 
         function buyBook(){
+            $.post("http://localhost:8000/is_supervisor",{},
+                   function(data){
+                       if(data === 'False'){
+                            alert('You\'re not logged in');
+                            go_to_home_page();                     
+                        }
+                        else{
+                            buyBookAsUser();
+                        }
+                    }
+                    );
+        }
+
+        function buyBookAsUser(){
              var parameter = getUrlData();
              $.post("http://localhost:8000/buyProduct",{'title':parameter},
                     function(data){
@@ -74,4 +91,4 @@
                        }
                     }
                 );
-}
+        }
