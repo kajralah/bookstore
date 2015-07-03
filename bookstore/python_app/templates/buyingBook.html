@@ -1,14 +1,15 @@
 <html>
-<head>
-<title>Book</title>
-{% load staticfiles %}
-<script src="{% static "js/jquery.min.js" %}"></script>
-<script src="{% static "js/books.js"%}"></script>
-</head>
+	<head>
+       <title>Buy the book! </title>
+       {% load staticfiles %}
+		<script src="{% static "js/jquery.min.js" %}"></script>
+		<script src="{% static "js/books.js"%}"></script>
+	</head>
 
-<body onload="getBookInfo()" id="body">
+<body onload="getBookInfo()">	
 
 <h1 id="th" align="center"></h1>
+
 <div>
 <div style="float:left;padding-left: 4cm;">
 
@@ -31,16 +32,19 @@
 <div style="padding-left: 4cm;margin-top:-1.5cm" >
 	<p id="image" align="center"></p>
 </div>
+
 </div>
-<div align="center">
-	<p id="the_price">Price : </p>
-	<p id="transport">Transport: </p>
-	<p id="total">Total : </p><br>
+<div align="center" id="buy">
+	<p>
+	<b>Price : <i id="the_price"></i></b></p>
+	<p>
+	<b>Transport : <i id="transport"></i></b></p>
+	<p>
+	<b>Total : <i id="total"></i></b></p>
 	<p id="quote">You will receive the book on the address provided in 1-3 days! Payment is on delivery!</p>
-	<button style="width: 10em;  height: 2em;" onclick="Like()">Like!</button>
-	<button style="width: 10em;  height: 2em;" onclick="Buy()">Buy!</button>
-	<a href="http://localhost:8000/index.html" ><input type="button" value="Back to homepage!" style="width: 11em;  height: 2em;"/></a></div>
-	
-<div id="likeInfo"></div>
+	<button id="buyButton" style="width: 10em;  height: 2em;" onclick="buyBook()">Buy!</button>
+	<a href="http://localhost:8000/index.html" ><input type="button" value="Back to homepage!" style="width: 11em;  height: 2em;"/></a>
+	<p id="result"></p>
+</div>
 </body>
 </html>

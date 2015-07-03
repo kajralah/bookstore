@@ -28,7 +28,15 @@
                         $('#description').append(values[5]);
                         $('#category').append(values[6]);  
                         $('#image').append("<img src=\"/static/img/"+values[7]+"\" width=\"250\" height=\"250\" alt=\"\" style=\"display:block;\"/>");
-				});
+				        $('#the_price').append(values[1]);
+                        $('#transport').append('2.50');
+                        var total = parseInt(values[1])+2.50;
+                        $('#total').append(total);
+                        $('#price').append(' BGN');
+                        $('#transport').append(' BGN');
+                        $('#the_price').append(' BGN');
+                        $('#total').append(' BGN');
+                });
 			}
 
             function Like(){
@@ -38,28 +46,32 @@
                     function(data){
                         if(data === 'True'){
                             $('#likeInfo').append("Thank you for liking !");
-                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                            $('#likeInfo').append("<a href=\"index.html\"> Back to homepage!</a>");
                         }
-                        else if (data === 'False'){
+                        else{
                             $('#likeInfo').append("You have already liked it!");
-                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
+                            $('#likeInfo').append("<a href=\"index.html\"> Back to homepage!</a>");
                         }
                     });
             }
 
-            function Buy(){
-                var title = $('#title').html();
-                $.post("http://localhost:8000/buyProduct",{'title':title},
-                    function(data){
-                         if(data === 'True'){
-                            $('#likeInfo').append("Thank you for buying !");
-                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
-                        }
-                        else if (data === 'False'){
-                            $('#likeInfo').append("You have already bought it!");
-                            //$('#likeInfo').append("<button onclick='window.location.replace('index.html')'>Back to homepage!</button>")
-                        }
+        function Buy(){
+            var title = $('#title').html();
+            window.open("http://localhost:8000/buyBook?title="+title);
+        }
 
+        function buyBook(){
+             var parameter = getUrlData();
+             $.post("http://localhost:8000/buyProduct",{'title':parameter},
+                    function(data){
+                       if(data=='True'){
+                            $('#buyButton').hide();
+                            $('#result').append("You bought the item !")
+                       }
+                       else{
+                            $('#buyButton').hide();
+                            $('#result').append("Sorry,you cannot buy now! Contact with admin!");
+                       }
                     }
                 );
-            }
+}

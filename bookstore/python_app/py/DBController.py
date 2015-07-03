@@ -8,7 +8,7 @@ DB_name = 'HR'
 DB_password = 'HR'
 DB_host = 'localhost'
 DB_connection = DB_name + '/' + DB_password + '@' + DB_host
-INSERT_USER_TO_DB = 'INSERT INTO USERS(USERNAME,USER_PASSWORD,USER_EMAIL,USER_ADDRESS,USER_PHONE) VALUES (:uname,:upass,:uemail,:uaddress,:uphone)'
+INSERT_USER_TO_DB = 'INSERT INTO USERS(USERNAME,USER_PASSWORD,USER_EMAIL,USER_ADDRESS,USER_PHONE,IS_SUPERVISOR) VALUES (:uname,:upass,:uemail,:uaddress,:uphone,:usupervisor)'
 FIND_USER_IN_DB = 'SELECT* FROM USERS WHERE USERNAME= :uname AND USER_PASSWORD= :upass'
 CHANGE_USER = 'UPDATE USERS SET USER_EMAIL =:uemail,USER_PHONE=:uphone,USER_ADDRESS=:uaddress,USER_PASSWORD=:upass WHERE USERNAME =:uname'
 ADD_BOOK = 'INSERT INTO BOOK(BOOK_TITLE,BOOK_PRICE,BOOK_AUTHOR,BOOK_PAGES,BOOK_PUBLISHER,BOOK_DESCRIPTION,BOOK_IMG,CATEGORY_ID) VALUES(:btitle,:bprice,:bauthor,:bpages,:bpublish,:bdesc,:bimg,:bcategory)'
@@ -27,6 +27,7 @@ INSERT_LIKED_CATEGORY = 'INSERT INTO USER_LIKED_CATEGORIES(USER_ID,CATEGORY_ID) 
 LIKED_CATEGORIES = 'SELECT CATEGORY_ID FROM USER_LIKED_CATEGORIES WHERE USER_ID=:user_id AND CATEGORY_ID =:category_id' 
 INSERT_LIKED_BOOKS='INSERT INTO USER_LIKED_BOOKS(USER_ID,BOOK_ID) VALUES(:user_id,:book_id)'
 INSERT_BOUGHT_BOOKS = 'INSERT INTO USER_BOUGHT(USER_ID,BOOK_ID,BUY_DATE) VALUES(:user_id,:book_id,CURRENT_TIMESTAMP)'
+IS_SUPERVISOR = 'SELECT IS_SUPERVISOR FROM USERS WHERE USER_ID =:user_id'
 
 class DBController:
 
@@ -44,7 +45,7 @@ class DBController:
             db_connection = self.__connect_to_db()
             cur = db_connection.cursor()
             cur.execute(INSERT_USER_TO_DB, uname=username, upass=password,
-                        uemail=email, uaddress=address, uphone=phone)
+                        uemail=email, uaddress=address, uphone=phone,usupervisor='F')
             db_connection.commit()
             cur.close()
             db_connection.close()
@@ -71,7 +72,7 @@ class DBController:
         db_connection.commit()
         for result in cur:
             if result[1] is not None:
-                user = User(result[1], result[2], result[3], result[4], result[5])
+                user = User(result[1], result[2], result[3], result[4], result[5],result[6])
                 cur.close()
                 db_connection.close()
                 return user
@@ -89,7 +90,7 @@ class DBController:
         db_connection.commit()
         for result in cur:
             if result[1] is not None:
-                user = User(result[1], result[2], result[3], result[4], result[5])
+                user = User(result[1], result[2], result[3], result[4], result[5],result[6])
                 cur.close()
                 db_connection.close()
                 return user
@@ -272,3 +273,17 @@ class DBController:
         db_connection.close()
         return True
 
+    # return True if is supervisor else False
+    def is_supervisor(self,user_id):
+        db_connection=self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(IS_SUPERVISOR,user_id=user_id)
+        db_connection.commit()
+        for result in cur:
+            if result is 'T':
+                is_supervisor=True
+            else:
+                is_supervisor=False
+        cur.close()
+        db_connection.close()
+        return is_supervisor

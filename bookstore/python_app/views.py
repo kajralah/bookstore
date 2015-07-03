@@ -97,32 +97,6 @@ def num_of_liked_products(request):
         result = str(number_of_liked_product)+','+str(number_of_bougth_product)
         return HttpResponse(result)
 
-@csrf_exempt
-def add_book(request):
-    title = request.POST['name-input']
-    price = request.POST['price-input']
-    description = request.POST['desc-input']
-    author = request.POST['author-input']
-    pages = request.POST['pages-input']
-    publisher = request.POST['publisher-input']
-    category = request.POST['category-input']
-    image = request.FILES['myfile']
-    
-    image_name = title
-    image_folder = 'bookstore\python_app\static\img'
-    image_extension = '.jpg'
-
-    destination = open(image_folder+'\\'+image_name+image_extension, 'wb+')
-    for chunk in image.chunks():
-        destination.write(chunk)
-    destination.close()
-
-    db = DBController()
-    db.add_book_to_db(title,price,author,pages,image_name+image_extension,
-        publisher,description,db.get_category_id_by_name(category))
-
-    return HttpResponseRedirect("index.html") 
-
 
 @csrf_exempt
 def get_categories(request):

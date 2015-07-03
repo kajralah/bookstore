@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^profile-settings.html',TemplateView.as_view(template_name='profile-settings.html')),
     url(r'^profile', profile),
     url(r'^liked',num_of_liked_products),
-    url(r'^book',add_book),
+    #url(r'^book',add_book),
     url(r'^newBook.html',TemplateView.as_view(template_name='newBook.html')),
     url(r'^categories',get_categories),
     url(r'^show_book',show_book),
@@ -28,5 +28,7 @@ urlpatterns = [
     url(r'^books/$',TemplateView.as_view(template_name='books.html')),
     url(r'^likeProduct',like_book),
     url(r'^buyProduct',buy_book),
+    url(r'^buyBook/$',TemplateView.as_view(template_name='buyingBook.html')),
+
     #url(r'^index',index),
 ]
