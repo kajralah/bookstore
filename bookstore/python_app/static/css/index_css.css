@@ -28,3 +28,13 @@
 	border:1px solid #d0d0d0;
 	padding: 10px;
 }
+.td{
+	padding :10px;
+	padding-left: 30px;
+	padding-right: 40px;
+}
+.bought_table{
+	position: relative;
+	border:1px solid #d0d0d0;
+	padding: 0px;
+}

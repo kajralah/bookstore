@@ -28,6 +28,7 @@ LIKED_CATEGORIES = 'SELECT CATEGORY_ID FROM USER_LIKED_CATEGORIES WHERE USER_ID=
 INSERT_LIKED_BOOKS='INSERT INTO USER_LIKED_BOOKS(USER_ID,BOOK_ID) VALUES(:user_id,:book_id)'
 INSERT_BOUGHT_BOOKS = 'INSERT INTO USER_BOUGHT(USER_ID,BOOK_ID,BUY_DATE) VALUES(:user_id,:book_id,CURRENT_TIMESTAMP)'
 IS_SUPERVISOR = 'SELECT IS_SUPERVISOR FROM USERS WHERE USER_ID =:user_id'
+GET_USERS_BOUGHT_BOOKS = 'SELECT * FROM BOOK NATURAL JOIN (SELECT BOOK_ID,BUY_DATE FROM USER_BOUGHT WHERE USER_ID = :user_id)'
 
 class DBController:
 
@@ -287,3 +288,19 @@ class DBController:
         cur.close()
         db_connection.close()
         return is_supervisor
+
+    def show_bought_books_by_user(self,user_id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_USERS_BOUGHT_BOOKS,user_id=user_id)
+        db_connection.commit()
+        list_of_book = []
+        for result in cur:
+            lst = list(result)
+            lst[9] = lst[9].strftime("%Y-%m-%d %H:%M:%S")
+            result_book = tuple(lst)
+            list_of_book.append(result_book)
+            list_of_book.append(",")
+        cur.close()
+        db_connection.close()
+        return list_of_book

@@ -23,30 +23,10 @@ function signIn() {
 						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
 						"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Profile</a>"+
 					"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout</a></li> </ul></div>")
-					}
+					}	
 				}
 			);/*  END of POST request*/
 		}/*END of signIn*/
-
-function index(){
-	$.post("http://localhost:8000/index/", {},
-		function(data){
-			if(data == 'ADMIN'){
-				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" id=\"login\"><ul class=\"nav navbar-nav navbar-right\">"+
-						"<li><a role=\"button\" href=\"newBook.html\"><i class=\"glyphicon glyphicon-user\"></i> Add book</a>"+
-						"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>")
-			}
-			else if (data ='None'){
-				go_to_home_page();
-			}
-			else{
-				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
-						"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Profile</a>"+
-					"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout</a></li> </ul></div>")
-			}
-		}
-	)/*end of POST*/
-}/*end of index()*/
 
 function register() {
 		$.post("http://localhost:8000/register/", {'username':$("#username-reg").val(),
@@ -219,20 +199,31 @@ function showProduct(title){
 	window.open("http://localhost:8000/books?title="+title);
 }
 
-/*function Change(){
-	$.post("http://localhost:8000/profile/", {},
-				function(data){
-					if (data=='You\'re not logged in'){
-						alert(data);
-						go_to_home_page();
-					}
-					else{
-						var values=data.split(',');	
-						$("#email").replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[2]+"\">");
-						$('#address').replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[0]+"\">");
-						$('#phone').replaceWith("<input class=\"form-control\" type=\"text\" value=\""+values[1]+"\">");
-					}
 
+function boughtBooks(){
+	$.post("http://localhost:8000/boughtBooks/", {},
+		function(data){
+			if(data == '' || data == null){
+					return;
 				}
-			);/*  END of POST request*/
-}*/
+			var values = data.split('),');
+			$('#tbody').append("<th style=\"text-align: center\">Title</th>");
+			$('#tbody').append("<th style=\"text-align: center\">Price</th>");
+			$('#tbody').append("<th style=\"text-align: center\">Buy date:</th>");
+			$('#tbody').append("<th style=\"text-align: center\">Info:</th>");
+			for(var index=0;index<values.length-1;index++){
+				$("#tbody").append("<tr>");
+
+				var varu = values[index];
+				varus = varu.split(',');
+
+				$("#tbody").append("<td class=\"td\"> <h4 align=\"center\">"+varus[1].substring(2,varus[1].length-1)+"</h2></td>"+
+                "<td class=\"td\"><h4 align=\"center\">"+ varus[2]+ " BGN<h4></td>");
+              	$("#tbody").append("<td class=\"td\">"+varus[9].substring(2,varus[9].length-1)+"</td>");
+                $("#tbody").append("<td class=\"td\"><button onclick=\"showProduct("+varus[1].substring(1,varus[1].length)+")\"> View </button></td>");
+				$("#tbody").append("</tr>");
+			}
+
+			}
+);/*END of post */
+}/*END of boughtBooks */

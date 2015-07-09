@@ -107,7 +107,7 @@ def add_book(request):
     pages = request.POST['pages-input']
     publisher = request.POST['publisher-input']
     category = request.POST['category-input']
-    image = request.FILES['myfile']
+    image = request.FILES.get['myfile',None]
     
     image_name = title
     image_folder = 'bookstore\python_app\static\img'
@@ -188,17 +188,30 @@ def is_supervisor(request):
 @csrf_exempt
 def changeProfile(request):
     db=DBController()
-    user_id = request.session['user_id']
-    email = request.POST['email']
-    address = request.POST['address']
-    phone = request.POST['phone']
-    password = request.POST['password']
-    repeated_pass = request.POST['password2']
     try:
+        user_id = request.session['user_id']
+        email = request.POST['email']
+        address = request.POST['address']
+        phone = request.POST['phone']
+        password = request.POST['password']
+        repeated_pass = request.POST['password2']
         result = User.is_password_correct(password)
+        if password != repeated_pass:
+            return HttpResponse('Password don\'t match')
+        db.change_user(user_id,password,email,address,phone)
+        return HttpResponseRedirect('index.html')
     except IncorrectPasswordException:
         return HttpResponse('Incorrect Password')
-    if password != repeated_pass:
-        return HttpResponse('Password don\'t match')
-    db.change_user(user_id,password,email,address,phone)
-    return HttpResponseRedirect('index.html')
+    except KeyError:
+        return HttpResponseRedirect('index.html')
+
+
+@csrf_exempt
+def boughtBooks(request):
+    db=DBController()
+    try:
+        user_id = request.session['user_id']
+        list_of_books = db.show_bought_books_by_user(user_id)
+        return HttpResponse(list_of_books)
+    except KeyError:
+        return HttpResponseRedirect('index.html')
