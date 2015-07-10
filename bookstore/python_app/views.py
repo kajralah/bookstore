@@ -11,6 +11,7 @@ from PIL import Image
 from django.shortcuts import render_to_response
 from django.template.response import TemplateResponse
 
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -45,7 +46,7 @@ def register(request):
         return HttpResponse('Wrong password')
     else:
         try:
-            db.add_user_to_db(username, password, address, phone, email)
+            db.add_user_to_db(username, password, email, address, phone)
             return HttpResponse('Registration complete')
         except ExistingUserException:
             return HttpResponse('User exists')
@@ -97,7 +98,6 @@ def num_of_liked_products(request):
     except KeyError:
         return HttpResponse("You're not logged in")
 
-
 @csrf_exempt
 def add_book(request):
     title = request.POST['name-input']
@@ -107,8 +107,13 @@ def add_book(request):
     pages = request.POST['pages-input']
     publisher = request.POST['publisher-input']
     category = request.POST['category-input']
-    image = request.FILES.get['myfile',None]
-    
+    image = request.FILES['myfile']
+
+    db = DBController()
+    message = 'Hello, We have new book in category: '+category+'.'+'You can see it here '+'http://localhost:8000/books/?title='+title+'  Have a nice day!'
+
+    result = db.send_emails(message,db.get_category_id_by_name(category))
+
     image_name = title
     image_folder = 'bookstore\python_app\static\img'
     image_extension = '.jpg'
@@ -118,12 +123,11 @@ def add_book(request):
         destination.write(chunk)
     destination.close()
 
-    db = DBController()
     db.add_book_to_db(title,price,author,pages,image_name+image_extension,
         publisher,description,db.get_category_id_by_name(category))
 
-    return HttpResponseRedirect('index.html') 
-
+    #return HttpResponseRedirect('index.html') 
+    return HttpResponse(result)
 
 @csrf_exempt
 def get_categories(request):
@@ -219,3 +223,17 @@ def wantEmail(request):
     db = DBController()
     db.update_sending_email(user_id,want_email)
     return HttpResponse(True)
+
+@csrf_exempt
+def get_books_from_category(request):
+    category_name=request.POST['category'] 
+    db=DBController()
+    list_of_books = db.show_books_for_category(category_name)
+    return HttpResponse(list_of_books)
+
+@csrf_exempt
+def searchCategory(request):
+    what_to_search_for = request.POST['whatToSearchFor']
+    db = DBController()
+    list_of_books = db.show_search_book(what_to_search_for)
+    return HttpResponse(list_of_books)

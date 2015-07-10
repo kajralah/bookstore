@@ -38,3 +38,15 @@
 	border:1px solid #d0d0d0;
 	padding: 0px;
 }
+#menu {
+    float: left;
+    width: 200px;
+    height: 200px;
+}
+
+#main {
+    float: left;
+    margin-top: 50px;
+    width: 800px;
+    height: 400px;
+}

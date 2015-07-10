@@ -36,4 +36,7 @@ urlpatterns = [
     url(r'^boughtBooks.html',TemplateView.as_view(template_name='boughtBooks.html')),
     url(r'^boughtBooks',boughtBooks),
     url(r'^wantEmail',wantEmail),
+    url(r'^category',get_books_from_category),
+    url(r'^searchCategory',searchCategory),
+    
 ]

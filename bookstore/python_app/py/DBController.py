@@ -3,6 +3,8 @@ from bookstore.python_app.py.User import *
 from bookstore.python_app.py.Exceptions import *
 from bookstore.python_app.py.Book import *
 import datetime
+from django.core.mail import send_mail
+
 
 DB_name = 'HR'
 DB_password = 'HR'
@@ -29,7 +31,10 @@ INSERT_LIKED_BOOKS='INSERT INTO USER_LIKED_BOOKS(USER_ID,BOOK_ID) VALUES(:user_i
 INSERT_BOUGHT_BOOKS = 'INSERT INTO USER_BOUGHT(USER_ID,BOOK_ID,BUY_DATE) VALUES(:user_id,:book_id,CURRENT_TIMESTAMP)'
 IS_SUPERVISOR = 'SELECT IS_SUPERVISOR FROM USERS WHERE USER_ID =:user_id'
 GET_USERS_BOUGHT_BOOKS = 'SELECT * FROM BOOK NATURAL JOIN (SELECT BOOK_ID,BUY_DATE FROM USER_BOUGHT WHERE USER_ID = :user_id)'
-UPDATE_USER_WANT_EMAIL= "UPDATE USER_LIKED_CATEGORIES SET USER_WANT_EMAIL =:wants_email where user_id =:user_id"
+UPDATE_USER_WANT_EMAIL= "UPDATE USER_LIKED_CATEGORIES SET USER_WANT_EMAIL =:wants_email WHERE USER_ID =:user_id"
+GET_USER_EMAILS_FOR_SENDING_MESSAGE = 'SELECT USER_EMAIL FROM USERS NATURAL JOIN (SELECT USER_ID FROM USER_LIKED_CATEGORIES WHERE CATEGORY_ID =:category_id AND USER_WANT_EMAIL = \'T\')'
+GET_BOOK_FOR_SHOW_FROM_CATEGORY ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK WHERE CATEGORY_ID=:category_id'
+GET_BOOK_FROM_SEARCH ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK WHERE book_title like :book_title'
 
 class DBController:
 
@@ -288,7 +293,7 @@ class DBController:
         cur.execute(IS_SUPERVISOR,user_id=user_id)
         db_connection.commit()
         for result in cur:
-            if result is 'T':
+            if result[0] is 'T':
                 is_supervisor=True
             else:
                 is_supervisor=False
@@ -321,6 +326,63 @@ class DBController:
         db_connection.close()
         return True
 
+    def get_emails_for_sending_msg(self,category_id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_USER_EMAILS_FOR_SENDING_MESSAGE,category_id=category_id)
+        db_connection.commit()
+        list_of_emails = []
+        for result in cur:
+            list_of_emails.extend(result)
+        cur.close()
+        db_connection.close()
+        return list_of_emails
 
-db = DBController()
-print(db.insert_into_liked_categories(42,'ROMANCE'))
+    def send_emails(self,the_message,category_id):
+        import smtplib
+        gmail_user = "bookstorebulgaria@gmail.com"
+        gmail_pwd = "thebookstore"
+        FROM = 'Bookstore'
+        TO = self.get_emails_for_sending_msg(category_id)
+        SUBJECT = "Bookstore - new book"
+        TEXT = the_message  
+
+        message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
+        """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587) 
+            server.ehlo()
+            server.starttls()
+            server.login(gmail_user, gmail_pwd)
+            for email in TO:
+                server.sendmail(FROM, email, message)
+            server.close()
+        except:
+            pass
+
+    def show_books_for_category(self,category_name):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_BOOK_FOR_SHOW_FROM_CATEGORY,category_id=self.get_category_id_by_name(category_name))
+        db_connection.commit()
+        list_of_book = []
+        for result in cur:
+            list_of_book.append(result)
+            list_of_book.append(",")
+        cur.close()
+        db_connection.close()
+        return list_of_book
+
+    def show_search_book(self,searched_book):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        search_book = '%'+searched_book+'%' 
+        cur.execute(GET_BOOK_FROM_SEARCH,book_title=search_book)
+        db_connection.commit()
+        list_of_book = []
+        for result in cur:
+            list_of_book.append(result)
+            list_of_book.append(",")
+        cur.close()
+        db_connection.close()
+        return list_of_book

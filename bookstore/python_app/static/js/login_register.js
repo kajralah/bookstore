@@ -71,7 +71,7 @@ function profile() {
 					}
 					else{
 						var values=data.split(',');	
-						$("#home").replaceWith("<div align=\"right\"><h2 align=\"center\">User info</h2><div align=\"center\"><br><br> Email: <p>"+values[2]+"</p>Address : <p>"+values[0]+"</p>Phone: <p>"+values[1]+"</p></div></div>");
+						$("#home").replaceWith("<div align=\"right\"><h2 align=\"center\">User info</h2><div align=\"center\"><br><br> Email: <p>"+values[0]+"</p>Address : <p>"+values[1]+"</p>Phone: <p>"+values[2]+"</p></div></div>");
 					}
 
 				}
@@ -95,19 +95,14 @@ function liked_products(){
 
 function categories(){
 	$.post("http://localhost:8000/categories/", {},
-				function(data){			
-
+				function(data){	
 					// Remove the parentheses and whitespace
 					values = data.replace(/[() ]/g,'');
-
 					var splited_values =values.split(',');
-
-					function splitvar(element,index,array){
-						array.pop();
-						array[index]=array[index].replace(/'/g, '');
-						$("#CategoriesMenu").append("<br><div><a style=\"font-size: 15px;\" onclick=\"cat("+ element+ ")\">"+array[index]+ "</a></div>");
-					}
-					splited_values.forEach(splitvar);
+					for (value in splited_values){
+						elementWithoutStr=splited_values[value].replace(/'/g, '');
+						$("#CategoriesMenu").append("<br><div><a style=\"font-size: 15px;\" onclick=\"category("+ splited_values[value]+ ")\">"+elementWithoutStr+ "</a></div>");
+				}
 				}
 			);/*  END of POST request*/
 }
@@ -117,11 +112,8 @@ function All(){
 	showBook();
 }
 
-function showBook(){
-	$.post("http://localhost:8000/show_book/", {},
-		function(data){	
-
-			if(data == '' || data == null){
+function showing_books(data){
+	if(data == '' || data == null){
 				return;
 			}
 			var values = data.split('),');
@@ -143,6 +135,22 @@ function showBook(){
                 "<p align=\"center\"><h4 align=\"center\">Price: "+ varus[1]+ " BGN<h4> <button onclick=\"showProduct("+varus[0].substring(1,varus[0].length)+")\"> View </button></p>"+"</div></td>");
 			}
 			$("#tbody").append("</tr>");
+}
+
+
+function category(category){
+	$.post("http://localhost:8000/category/", {category:category},
+		function(data){
+			$("#tbody").empty();
+			showing_books(data);
+		}
+	);
+}
+
+function showBook(){
+	$.post("http://localhost:8000/show_book/", {},
+		function(data){	
+			showing_books(data);
 	}//end of function
 )//end of post
 }//show_book
@@ -183,10 +191,9 @@ function addCategories(){
 
 					var splited_values =values.split(',');
 
-					function splitvar(element,index,array){
-						array.pop();
-						array[index]=array[index].replace(/'/g, '');
-						$("#prod-categories-reg").append("<a style=\"font-size:20px;\" onclick=\"setCategories("+element+")\">"+array[index]+"</a><br>");
+					for (value in splited_values){
+						elementWithoutStr=splited_values[value].replace(/'/g, '');
+						$("#prod-categories-reg").append("<a style=\"font-size:20px;\" onclick=\"setCategories("+splited_values[value]+")\">"+elementWithoutStr+"</a><br>");
 					}
 
 					splited_values.forEach(splitvar);
@@ -240,4 +247,15 @@ $.post("http://localhost:8000/isLoggedUser/", {},
 				}
 			}
 		);
+}
+
+function searchCategory(){
+	var search = document.getElementById('search').value;
+	event.preventDefault();
+		$.post("http://localhost:8000/searchCategory/", {'whatToSearchFor':search},
+			function(data){
+				$("#tbody").empty();
+				showing_books(data);
+			}
+	);
 }

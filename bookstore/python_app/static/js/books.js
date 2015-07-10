@@ -38,8 +38,21 @@
                         $('#total').append(' BGN');
                 });
 			}
+        function isUserLogged(callback){
+            $.post("http://localhost:8000/isLoggedUser/", {},
+                function(data){
+                    callback(data);
+                }
+            );
+        }
 
-            function Like(){
+    function Like(){
+            
+        isUserLogged(function(data) {
+            if(data ==='False'){
+                alert('You\'re not logged in');
+            }
+            else{
                 var category = $('#category').html();
                 var title = $('#title').html();
                 $.post("http://localhost:8000/likeProduct",{'category':category,'title':title},
@@ -59,7 +72,9 @@
                             $('#likeInfo').append("<a href=\"\index.html\"> Back to homepage!</a>");
                         }
                     });
-            }
+            }           
+        });
+    }
 
 function go_to_home_page(){
     window.location.href = "/index.html";
