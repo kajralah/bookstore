@@ -1,42 +1,41 @@
 #index_button{
-
-	background: url('/static/img/bookstore_logo.jpg') no-repeat;
+    background: url('/static/img/bookstore_logo.jpg') no-repeat;
     width: 9.5em;  
     height: 3em;
     margin-top: 0.5em;
 }
 #search{
-	margin-top: 0.9em;
+    margin-top: 0.9em;
 }
 #search2{
-	margin-top: 1.4em;
+    margin-top: 1.4em;
 }
 #login{
-	margin-top: 1em;
+    margin-top: 1em;
 }
 #col-md-6{
-	margin-left: 10em;
+    margin-left: 10em;
 }
 .product-table{
-	position: relative;
-	text-decoration: none;
-	width: 100%;
-	margin-left: 100px
+    position: relative;
+    text-decoration: none;
+    width: 100%;
+    margin-left: 100px
 }
 .product-td{
-	position: relative;
-	border:1px solid #d0d0d0;
-	padding: 10px;
+    position: relative;
+    border:1px solid #d0d0d0;
+    padding: 10px;
 }
 .td{
-	padding :10px;
-	padding-left: 30px;
-	padding-right: 40px;
+    padding :10px;
+    padding-left: 30px;
+    padding-right: 40px;
 }
 .bought_table{
-	position: relative;
-	border:1px solid #d0d0d0;
-	padding: 0px;
+    position: relative;
+    border:1px solid #d0d0d0;
+    padding: 0px;
 }
 #menu {
     float: left;

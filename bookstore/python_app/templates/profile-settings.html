@@ -1,58 +1,61 @@
 <html>
-	<head>
-		<title>BookStore</title>
-		<meta charset="utf-8">
-		{% load staticfiles %}
-		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
-		<link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
-		<link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}">
-		<script src="{% static "js/jquery.min.js" %}"></script>
-		<script src="{% static "js/login_register.js"%}"></script>
-		<script src="{% static "js/bootstrap.min.js" %}"></script>
-		<script>window.onload=liked_products()</script>
-
-	</head>
-
-<body onload="loadProfile()">
-
-<!-- Navigation Bar -->
-	<div class="navbar navbar-inverse navbar-static-top">
-        <div class="container -fluid">
-                        <div class = "navbar-header-inverse">
-                       		 <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
-                        </div>
-
-			 			 <!--Log out buttons -->
-			<div class = "navbar-collapse collapse" id="login">
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
-				  </ul>
-			</div>	
-		</div>
-    </div>
-	
-		<div class="container">
-		<div class="row">
-			<div class="col-sm-10" id="usernameHeader"><p align="left"></p></div>
-		</div>
-	
-		<div class="row">
-			<div class="col-sm-3"> <!--left col-->
-			  <ul class="list-group">
-				<li class="list-group-item text-muted"><p align="center">Activity <i class="fa fa-dashboard fa-1x"></i></p></li>
-				<li class="list-group-item text-right" id="Bought"><p align="center"><strong>Bought</strong></p></li>
-				<li class="list-group-item text-right" id="Liked"><p align="center"><strong>Liked Categories</strong></p> </li>
-			  </ul> 	   
-			 </div> <!--/col-3-->
-
-		<div id="home" class="col-sm-9"></div>
-		<br><br><br>	
-		<p align="left">
-		<a href="changeProfile.html">Change Profile</a>	
-		<a href="boughtBooks.html">View bought books</a>
-		</p>
-		<br/><br/><br/>
-
-	</body>
+   <head>
+      <title>BookStore</title>
+      <meta charset="utf-8">
+      {% load staticfiles %}
+      <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
+      <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
+      <link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}">
+      <script src="{% static "js/jquery.min.js" %}"></script>
+      <script src="{% static "js/login_register.js"%}"></script>
+      <script src="{% static "js/bootstrap.min.js" %}"></script>
+      <script>window.onload=liked_products()</script>
+   </head>
+   <body onload="loadProfile()">
+      <!-- Navigation Bar -->
+      <div class="navbar navbar-inverse navbar-static-top">
+         <div class="container -fluid">
+            <div class = "navbar-header-inverse">
+               <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
+            </div>
+            <!--Log out buttons -->
+            <div class = "navbar-collapse collapse" id="login">
+               <ul class="nav navbar-nav navbar-right">
+                  <li>
+                     <a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="container">
+      <div class="row">
+         <div class="col-sm-10" id="usernameHeader">
+            <p align="left"></p>
+         </div>
+      </div>
+      <div class="row">
+      <div class="col-sm-3">
+         <!--left col-->
+         <ul class="list-group">
+            <li class="list-group-item text-muted">
+               <p align="center">Activity <i class="fa fa-dashboard fa-1x"></i></p>
+            </li>
+            <li class="list-group-item text-right" id="Bought">
+               <p align="center"><strong>Bought</strong></p>
+            </li>
+            <li class="list-group-item text-right" id="Liked">
+               <p align="center"><strong>Liked Categories</strong></p>
+            </li>
+         </ul>
+      </div>
+      <!--/col-3-->
+      <div id="home" class="col-sm-9"></div>
+      <br><br><br>	
+      <p align="left">
+         <a href="changeProfile.html">Change Profile</a>	
+         <a href="boughtBooks.html">View bought books</a>
+      </p>
+      <br/><br/><br/>
+   </body>
 </html>

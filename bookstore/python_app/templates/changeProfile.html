@@ -1,92 +1,88 @@
 <html>
-  <head>
-    <title>BookStore</title>
-    <meta charset="utf-8">
-    {% load staticfiles %}
-    <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
-    <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
-    <link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}">
-    <script src="{% static "js/jquery.min.js" %}"></script>
-    <script src="{% static "js/login_register.js"%}"></script>
-    <script src="{% static "js/bootstrap.min.js" %}"></script>
-    <script type="text/javascript">window.load=loadPage()</script>
-  </head>
-
-  <body>
-        
-<!-- Navigation Bar -->
-     <div class="navbar navbar-inverse navbar-static-top">
-        <div class="container -fluid">
-                        <div class = "navbar-header-inverse">
-                           <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
-                        </div>
-
-             <!--Log out buttons -->
-      <div class = "navbar-collapse collapse" id="login">
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
-          </ul>
-      </div>  
-    </div>
-    </div>
-                                                 
-   <!-- SETTINNGS -->
-   <div class="col-sm-9" align="center">                   
-      <div class="tab-pane" id="changeProfile">                                      
-        <hr>
-        <h2 align="center">Change profile</h2>
-        <form class="form" action="changeProfile" method="post">        
-          <div class="form-group">
-          <!-- EMAIL -->
-          <div class="col-xs-6" align="center">
-            <h4><label for="email">Email</label></h4>
-            <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
+   <head>
+      <title>BookStore</title>
+      <meta charset="utf-8">
+      {% load staticfiles %}
+      <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap.min.css" %}" >
+      <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}" >
+      <link rel="stylesheet"  type="text/css" href="{% static "css/index_css.css" %}">
+      <script src="{% static "js/jquery.min.js" %}"></script>
+      <script src="{% static "js/login_register.js"%}"></script>
+      <script src="{% static "js/bootstrap.min.js" %}"></script>
+      <script type="text/javascript">window.load=loadPage()</script>
+   </head>
+   <body>
+      <!-- Navigation Bar -->
+      <div class="navbar navbar-inverse navbar-static-top">
+         <div class="container -fluid">
+            <div class = "navbar-header-inverse">
+               <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
             </div>
+            <!--Log out buttons -->
+            <div class = "navbar-collapse collapse" id="login">
+               <ul class="nav navbar-nav navbar-right">
+                  <li>
+                     <a onclick="logout()"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+                  </li>
+               </ul>
             </div>
-            <div class="form-group">
-          <!-- Address-->
-            <div class="col-xs-6" align="center">
-              <h4><label for="address">Address</label></h4>
-                    <input type="text" class="form-control" name="address" id="address" placeholder="enter address" title="enter your address.">
-            </div>
-          </div>
-                                                  
-          <div class="form-group">
-          <!-- PHONE -->
-          <div class="col-xs-6" align="center">
-              <h4><label for="phone">Phone</label></h4>
-              <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
-          </div>
-          </div>
-                          
-          <div class="form-group">
-          <!-- PASSWORD -->
-          <div class="col-xs-6" align="center">
-              <h4><label for="password">Password</label></h4>
-                  <input type="password" class="form-control" name="password" id="password" title="enter your password.">
-          </div>
-          </div>
-          <div class="form-group">
-          <!-- PASSWORD AGAIN -->
-          <div class="col-xs-6" align="center">
-              <h4><label for="password2">Verify</label></h4>
-              <input type="password" class="form-control" name="password2" id="password2" title="enter your password2.">
-          </div>
-          </div>
-          <div class="form-group">
-          <!-- BUTTONS SAVE and RESET -->
-            <div class="col-xs-12">
-            <br>
-            <button class="btn btn-lg btn-success" value="Submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
-            <button class="btn btn-lg btn-success" type="reset">Refresh Form </button>
-              <a href="/index.html" ><input type="button" class="btn btn-lg btn-success" value="Cancel" style="width: 5em;  height: 2.5em;"/></a>
-            </div>
-          </div>
-        </form>
-      </div><!-- close setting -->
-      </div><!--/tab-content--> 
+         </div>
+      </div>
+      <!-- SETTINNGS -->
+      <div class="col-sm-9" align="center">
+         <div class="tab-pane" id="changeProfile">
+            <hr>
+            <h2 align="center">Change profile</h2>
+            <form class="form" action="changeProfile" method="post">
+               <div class="form-group">
+                  <!-- EMAIL -->
+                  <div class="col-xs-6" align="center">
+                     <h4><label for="email">Email</label></h4>
+                     <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <!-- Address-->
+                  <div class="col-xs-6" align="center">
+                     <h4><label for="address">Address</label></h4>
+                     <input type="text" class="form-control" name="address" id="address" placeholder="enter address" title="enter your address.">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <!-- PHONE -->
+                  <div class="col-xs-6" align="center">
+                     <h4><label for="phone">Phone</label></h4>
+                     <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <!-- PASSWORD -->
+                  <div class="col-xs-6" align="center">
+                     <h4><label for="password">Password</label></h4>
+                     <input type="password" class="form-control" name="password" id="password" title="enter your password.">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <!-- PASSWORD AGAIN -->
+                  <div class="col-xs-6" align="center">
+                     <h4><label for="password2">Verify</label></h4>
+                     <input type="password" class="form-control" name="password2" id="password2" title="enter your password2.">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <!-- BUTTONS SAVE and RESET -->
+                  <div class="col-xs-12">
+                     <br>
+                     <button class="btn btn-lg btn-success" value="Submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                     <button class="btn btn-lg btn-success" type="reset">Refresh Form </button>
+                     <a href="/index.html" ><input type="button" class="btn btn-lg btn-success" value="Cancel" style="width: 5em;  height: 2.5em;"/></a>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <!-- close setting -->
+      </div>
+      <!--/tab-content--> 
       <br/><br/><br/>
-
-  </body>
+   </body>
 </html>

@@ -2,39 +2,10 @@ import cx_Oracle
 from bookstore.python_app.py.User import *
 from bookstore.python_app.py.Exceptions import *
 from bookstore.python_app.py.Book import *
+from bookstore.python_app.py.DBQueries import *
 import datetime
 from django.core.mail import send_mail
 
-
-DB_name = 'HR'
-DB_password = 'HR'
-DB_host = 'localhost'
-DB_connection = DB_name + '/' + DB_password + '@' + DB_host
-INSERT_USER_TO_DB = 'INSERT INTO USERS(USERNAME,USER_PASSWORD,USER_EMAIL,USER_ADDRESS,USER_PHONE,IS_SUPERVISOR) VALUES (:uname,:upass,:uemail,:uaddress,:uphone,:usupervisor)'
-FIND_USER_IN_DB = 'SELECT* FROM USERS WHERE USERNAME= :uname AND USER_PASSWORD= :upass'
-CHANGE_USER = 'UPDATE USERS SET USER_EMAIL =:uemail,USER_PHONE=:uphone,USER_ADDRESS=:uaddress,USER_PASSWORD=:upass WHERE USER_ID =:user_id'
-ADD_BOOK = 'INSERT INTO BOOK(BOOK_TITLE,BOOK_PRICE,BOOK_AUTHOR,BOOK_PAGES,BOOK_PUBLISHER,BOOK_DESCRIPTION,BOOK_IMG,CATEGORY_ID) VALUES(:btitle,:bprice,:bauthor,:bpages,:bpublish,:bdesc,:bimg,:bcategory)'
-GET_BOOK_FROM_DB = 'SELECT * FROM BOOK WHERE CATEGORY_ID=:category_id'
-GET_USER_ID = 'SELECT USER_ID FROM USERS WHERE USERNAME =:username AND USER_PASSWORD =:password'
-GET_USER_FROM_ID = 'SELECT * FROM USERS WHERE USER_ID=:id'
-GET_USER_LIKED_INFO = 'SELECT * FROM USER_LIKED_CATEGORIES WHERE USER_ID=:id'
-GET_USER_BOUGHT_INFO = 'SELECT * FROM USER_BOUGHT WHERE USER_ID = :id'
-GET_CATEGORIES = 'SELECT CATEGORY_NAME FROM CATEGORIES'
-GET_CATEGORIES_BY_NAME = 'SELECT CATEGORY_ID FROM CATEGORIES WHERE CATEGORY_NAME LIKE :category_name'
-GET_BOOK_FOR_SHOW ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK'
-GET_BOOK_ID_BY_NAME='SELECT BOOK_ID FROM BOOK WHERE BOOK_TITLE LIKE :book_title'
-GET_BOOK_BY_ID='SELECT * FROM BOOK WHERE BOOK_ID=:book_id'
-GET_CATEGORIE_NAME_BY_ID = 'SELECT CATEGORY_NAME FROM CATEGORIES WHERE CATEGORY_ID LIKE :category_id'
-INSERT_LIKED_CATEGORY = 'INSERT INTO USER_LIKED_CATEGORIES(USER_ID,CATEGORY_ID,USER_WANT_EMAIL) VALUES(:user_id,:category_id,:want_email)'
-LIKED_CATEGORIES = 'SELECT CATEGORY_ID FROM USER_LIKED_CATEGORIES WHERE USER_ID=:user_id AND CATEGORY_ID =:category_id' 
-INSERT_LIKED_BOOKS='INSERT INTO USER_LIKED_BOOKS(USER_ID,BOOK_ID) VALUES(:user_id,:book_id)'
-INSERT_BOUGHT_BOOKS = 'INSERT INTO USER_BOUGHT(USER_ID,BOOK_ID,BUY_DATE) VALUES(:user_id,:book_id,CURRENT_TIMESTAMP)'
-IS_SUPERVISOR = 'SELECT IS_SUPERVISOR FROM USERS WHERE USER_ID =:user_id'
-GET_USERS_BOUGHT_BOOKS = 'SELECT * FROM BOOK NATURAL JOIN (SELECT BOOK_ID,BUY_DATE FROM USER_BOUGHT WHERE USER_ID = :user_id)'
-UPDATE_USER_WANT_EMAIL= "UPDATE USER_LIKED_CATEGORIES SET USER_WANT_EMAIL =:wants_email WHERE USER_ID =:user_id"
-GET_USER_EMAILS_FOR_SENDING_MESSAGE = 'SELECT USER_EMAIL FROM USERS NATURAL JOIN (SELECT USER_ID FROM USER_LIKED_CATEGORIES WHERE CATEGORY_ID =:category_id AND USER_WANT_EMAIL = \'T\')'
-GET_BOOK_FOR_SHOW_FROM_CATEGORY ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK WHERE CATEGORY_ID=:category_id'
-GET_BOOK_FROM_SEARCH ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK WHERE book_title like :book_title'
 
 class DBController:
 
@@ -52,17 +23,18 @@ class DBController:
             db_connection = self.__connect_to_db()
             cur = db_connection.cursor()
             cur.execute(INSERT_USER_TO_DB, uname=username, upass=password,
-                        uemail=email, uaddress=address, uphone=phone,usupervisor='F')
+                        uemail=email, uaddress=address,
+                        uphone=phone, usupervisor='F')
             db_connection.commit()
             cur.close()
             db_connection.close()
         else:
             raise ExistingUserException()
 
-    def get_user_id(self,username,password):
+    def get_user_id(self, username, password):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_USER_ID,username= username,password=password)
+        cur.execute(GET_USER_ID, username=username, password=password)
         db_connection.commit()
         for result in cur:
             if result[0] is None:
@@ -72,14 +44,15 @@ class DBController:
         cur.close()
         db_connection.close()
 
-    def return_user_by_id(self,id):
+    def return_user_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_USER_FROM_ID,id=id)
+        cur.execute(GET_USER_FROM_ID, id=id)
         db_connection.commit()
         for result in cur:
             if result[1] is not None:
-                user = User(result[1], result[2], result[3], result[4], result[5],result[6])
+                user = User(result[1], result[2], result[3],
+                            result[4], result[5], result[6])
                 cur.close()
                 db_connection.close()
                 return user
@@ -97,7 +70,8 @@ class DBController:
         db_connection.commit()
         for result in cur:
             if result[1] is not None:
-                user = User(result[1], result[2], result[3], result[4], result[5],result[6])
+                user = User(result[1], result[2], result[3],
+                            result[4], result[5], result[6])
                 cur.close()
                 db_connection.close()
                 return user
@@ -106,8 +80,9 @@ class DBController:
                 db_connection.close()
                 return None
 
-    # the password is checked and the existing of the user is checked before invoking this function
-    # returns True if user is changed else raise cx_ORacle.IntegrityError
+# the password is checked and the existing of
+# the user is checked before invoking this function
+# returns True if user is changed else raise cx_ORacle.IntegrityError
     def change_user(self, user_id, password, email, address, phone):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -119,32 +94,37 @@ class DBController:
         return True
 
     # return True if added else raise cx_oracle integrity error
-    def add_book_to_db(self, book_title, book_price, book_author, book_pages, book_image,book_publisher, book_description, category_id):
+    def add_book_to_db(self, book_title, book_price, book_author,
+                       book_pages, book_image, book_publisher,
+                       book_description, category_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(ADD_BOOK, btitle=book_title, bprice=book_price, bauthor=book_author,
-                   bpages=book_pages, bpublish=book_description, bdesc=book_description,bimg=book_image,bcategory=category_id)
+        cur.execute(ADD_BOOK, btitle=book_title,
+                    bprice=book_price, bauthor=book_author,
+                    bpages=book_pages, bpublish=book_description,
+                    bdesc=book_description,
+                    bimg=book_image, bcategory=category_id)
         db_connection.commit()
         cur.close()
         db_connection.close()
         return True
 
-    def get_category_id_by_name(self,category_name):
-        db_connection=self.__connect_to_db()
+    def get_category_id_by_name(self, category_name):
+        db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_CATEGORIES_BY_NAME,category_name=category_name)
+        cur.execute(GET_CATEGORIES_BY_NAME, category_name=category_name)
         db_connection.commit()
-        category_id= 0
+        category_id = 0
         for result in cur:
             category_id = result[0]
         cur.close()
         db_connection.close()
         return category_id
 
-    def number_of_liked_product(self,user_id):
+    def number_of_liked_product(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_USER_LIKED_INFO,id =user_id)
+        cur.execute(GET_USER_LIKED_INFO, id=user_id)
         db_connection.commit()
         number_of_liked_products = 0
         for result in cur:
@@ -153,10 +133,10 @@ class DBController:
         db_connection.close()
         return number_of_liked_products
 
-    def number_of_bought_items(self,user_id):
-        db_connection=self.__connect_to_db()
-        cur= db_connection.cursor()
-        cur.execute(GET_USER_BOUGHT_INFO,id=user_id)   
+    def number_of_bought_items(self, user_id):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(GET_USER_BOUGHT_INFO, id=user_id)
         db_connection.commit()
         number_of_bought_item = 0
         for result in cur:
@@ -166,8 +146,8 @@ class DBController:
         return number_of_bought_item
 
     def get_categories(self):
-        db_connection= self.__connect_to_db()
-        cur= db_connection.cursor()
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
         cur.execute(GET_CATEGORIES)
         db_connection.commit()
         list_of_categories = ()
@@ -191,33 +171,34 @@ class DBController:
         db_connection.close()
         return list_of_book
 
-    def get_book_id_by_title(self,title):
+    def get_book_id_by_title(self, title):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_BOOK_ID_BY_NAME,book_title=title)
+        cur.execute(GET_BOOK_ID_BY_NAME, book_title=title)
         db_connection.commit()
-        book_id=0
+        book_id = 0
         for result in cur:
             book_id = result[0]
         cur.close()
         db_connection.close()
         return book_id
 
-    def get_book_by_id(self,id):
+    def get_book_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_BOOK_BY_ID,book_id=id)
+        cur.execute(GET_BOOK_BY_ID, book_id=id)
         db_connection.commit()
         for result in cur:
-            book=Book(result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8])
+            book = Book(result[1], result[2], result[3], result[
+                        4], result[5], result[6], result[7], result[8])
         cur.close()
         db_connection.close()
         return book
-    
-    def get_categorie_by_id(self,id):
+
+    def get_categorie_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_CATEGORIE_NAME_BY_ID,category_id=id)
+        cur.execute(GET_CATEGORIE_NAME_BY_ID, category_id=id)
         db_connection.commit()
         for result in cur:
             category_name = result[0]
@@ -225,13 +206,13 @@ class DBController:
         db_connection.close()
         return category_name
 
-    #Returns False if the user doesn't like yet this category
-    #else returns the category_id
-    def check_for_liked_categories(self,user_id,category_name):
+    # Returns False if the user doesn't like yet this category
+    # else returns the category_id
+    def check_for_liked_categories(self, user_id, category_name):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        category_id=db.get_category_id_by_name(category_name)
-        cur.execute(LIKED_CATEGORIES,user_id = user_id,category_id=category_id)
+        category_id = db.get_category_id_by_name(category_name)
+        cur.execute(LIKED_CATEGORIES, user_id=user_id, category_id=category_id)
         db_connection.commit()
         has_category = ""
         for result in cur:
@@ -243,68 +224,68 @@ class DBController:
         else:
             return has_category
 
-    #return true if category is added in user_liked_category
-    #return false if user already liked this category
-    def insert_into_liked_categories(self,user_id,category_name):
-            db_connection = self.__connect_to_db()
-            cur = db_connection.cursor()
-            category_id = db.get_category_id_by_name(category_name)
-            if self.check_for_liked_categories(user_id,category_name) is False:
-                cur.execute(INSERT_LIKED_CATEGORY,user_id = user_id,category_id=category_id,want_email='T')
-                db_connection.commit()
-                cur.close()
-                db_connection.close()
+    # return true if category is added in user_liked_category
+    # return false if user already liked this category
+    def insert_into_liked_categories(self, user_id, category_name):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        category_id = db.get_category_id_by_name(category_name)
+        if self.check_for_liked_categories(user_id, category_name) is False:
+            cur.execute(INSERT_LIKED_CATEGORY, user_id=user_id,
+                        category_id=category_id, want_email='T')
+            db_connection.commit()
+            cur.close()
+            db_connection.close()
 
-    #return True if book_id is added in user_liked_books
-    def insert_into_user_liked_books(self,user_id,book_title,category_name):
-        result =''
+    # return True if book_id is added in user_liked_books
+    def insert_into_user_liked_books(self, user_id, book_title, category_name):
+        result = ''
         try:
             db_connection = self.__connect_to_db()
             cur = db_connection.cursor()
-            db.insert_into_liked_categories(user_id,category_name)
+            db.insert_into_liked_categories(user_id, category_name)
             book_id = self.get_book_id_by_title(book_title)
-            cur.execute(INSERT_LIKED_BOOKS,user_id=user_id,book_id=book_id)
+            cur.execute(INSERT_LIKED_BOOKS, user_id=user_id, book_id=book_id)
             db_connection.commit()
-            result= True
+            result = True
             return result
         except Exception as e:
-            result= str(e)
+            result = str(e)
             return result
         finally:
             cur.close()
             db_connection.close()
 
-
-    def insert_into_user_bought(self,user_id,book_title):
-        db_connection=self.__connect_to_db()
+    def insert_into_user_bought(self, user_id, book_title):
+        db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
         book_id = self.get_book_id_by_title(book_title)
         date = datetime.date.today().strftime("%d-%B-%Y")
-        cur.execute(INSERT_BOUGHT_BOOKS,user_id=user_id,book_id=book_id)
+        cur.execute(INSERT_BOUGHT_BOOKS, user_id=user_id, book_id=book_id)
         db_connection.commit()
         cur.close()
         db_connection.close()
         return True
 
     # return True if is supervisor else False
-    def is_supervisor(self,user_id):
-        db_connection=self.__connect_to_db()
+    def is_supervisor(self, user_id):
+        db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(IS_SUPERVISOR,user_id=user_id)
+        cur.execute(IS_SUPERVISOR, user_id=user_id)
         db_connection.commit()
         for result in cur:
             if result[0] is 'T':
-                is_supervisor=True
+                is_supervisor = True
             else:
-                is_supervisor=False
+                is_supervisor = False
         cur.close()
         db_connection.close()
         return is_supervisor
 
-    def show_bought_books_by_user(self,user_id):
+    def show_bought_books_by_user(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_USERS_BOUGHT_BOOKS,user_id=user_id)
+        cur.execute(GET_USERS_BOUGHT_BOOKS, user_id=user_id)
         db_connection.commit()
         list_of_book = []
         for result in cur:
@@ -317,19 +298,21 @@ class DBController:
         db_connection.close()
         return list_of_book
 
-    def update_sending_email(self,user_id,wants_email):
+    def update_sending_email(self, user_id, wants_email):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(UPDATE_USER_WANT_EMAIL,wants_email=wants_email,user_id=user_id)
+        cur.execute(
+            UPDATE_USER_WANT_EMAIL, wants_email=wants_email, user_id=user_id)
         db_connection.commit()
         cur.close()
         db_connection.close()
         return True
 
-    def get_emails_for_sending_msg(self,category_id):
+    def get_emails_for_sending_msg(self, category_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_USER_EMAILS_FOR_SENDING_MESSAGE,category_id=category_id)
+        cur.execute(
+            GET_USER_EMAILS_FOR_SENDING_MESSAGE, category_id=category_id)
         db_connection.commit()
         list_of_emails = []
         for result in cur:
@@ -338,19 +321,19 @@ class DBController:
         db_connection.close()
         return list_of_emails
 
-    def send_emails(self,the_message,category_id):
+    def send_emails(self, the_message, category_id):
         import smtplib
         gmail_user = "bookstorebulgaria@gmail.com"
         gmail_pwd = "thebookstore"
         FROM = 'Bookstore'
         TO = self.get_emails_for_sending_msg(category_id)
         SUBJECT = "Bookstore - new book"
-        TEXT = the_message  
+        TEXT = the_message
 
         message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
         """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
         try:
-            server = smtplib.SMTP("smtp.gmail.com", 587) 
+            server = smtplib.SMTP("smtp.gmail.com", 587)
             server.ehlo()
             server.starttls()
             server.login(gmail_user, gmail_pwd)
@@ -360,10 +343,11 @@ class DBController:
         except:
             pass
 
-    def show_books_for_category(self,category_name):
+    def show_books_for_category(self, category_name):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        cur.execute(GET_BOOK_FOR_SHOW_FROM_CATEGORY,category_id=self.get_category_id_by_name(category_name))
+        cur.execute(GET_BOOK_FOR_SHOW_FROM_CATEGORY,
+                    category_id=self.get_category_id_by_name(category_name))
         db_connection.commit()
         list_of_book = []
         for result in cur:
@@ -373,11 +357,11 @@ class DBController:
         db_connection.close()
         return list_of_book
 
-    def show_search_book(self,searched_book):
+    def show_search_book(self, searched_book):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
-        search_book = '%'+searched_book+'%' 
-        cur.execute(GET_BOOK_FROM_SEARCH,book_title=search_book)
+        search_book = '%'+searched_book+'%'
+        cur.execute(GET_BOOK_FROM_SEARCH, book_title=search_book)
         db_connection.commit()
         list_of_book = []
         for result in cur:

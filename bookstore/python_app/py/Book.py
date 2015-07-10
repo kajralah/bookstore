@@ -1,4 +1,4 @@
-#from bookstore.python_app.py.Exceptions import *
+from bookstore.python_app.py.Exceptions import *
 
 class Book:
 

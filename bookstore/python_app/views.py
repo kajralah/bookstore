@@ -33,6 +33,7 @@ def login(request):
         request.session['user_id'] = db.get_user_id(username, password)
         return HttpResponse('Welcome')
 
+
 @csrf_exempt
 def register(request):
     db = DBController()
@@ -51,6 +52,7 @@ def register(request):
         except ExistingUserException:
             return HttpResponse('User exists')
 
+
 @csrf_exempt
 def logout(request):
     try:
@@ -58,6 +60,7 @@ def logout(request):
     except KeyError:
         return HttpResponse("You're not logged in")
     return HttpResponse("You're logged out.")
+
 
 @csrf_exempt
 def isLoggedUser(request):
@@ -84,7 +87,7 @@ def profile(request):
 
 @csrf_exempt
 def num_of_liked_products(request):
-    db=DBController()
+    db = DBController()
     try:
         user_id = request.session['user_id']
         user = db.return_user_by_id(user_id)
@@ -93,10 +96,12 @@ def num_of_liked_products(request):
         else:
             number_of_liked_product = db.number_of_liked_product(user_id)
             number_of_bougth_product = db.number_of_bought_items(user_id)
-            result = str(number_of_liked_product)+','+str(number_of_bougth_product)
+            result = str(number_of_liked_product)+',' + \
+                str(number_of_bougth_product)
             return HttpResponse(result)
     except KeyError:
         return HttpResponse("You're not logged in")
+
 
 @csrf_exempt
 def add_book(request):
@@ -110,9 +115,11 @@ def add_book(request):
     image = request.FILES['myfile']
 
     db = DBController()
-    message = 'Hello, We have new book in category: '+category+'.'+'You can see it here '+'http://localhost:8000/books/?title='+title+'  Have a nice day!'
+    message = 'Hello, We have new book in category: '+category+'.' + \
+        'You can see it here '+'http://localhost:8000/books/?title=' + \
+        title+'  Have a nice day!'
 
-    result = db.send_emails(message,db.get_category_id_by_name(category))
+    result = db.send_emails(message, db.get_category_id_by_name(category))
 
     image_name = title
     image_folder = 'bookstore\python_app\static\img'
@@ -123,11 +130,13 @@ def add_book(request):
         destination.write(chunk)
     destination.close()
 
-    db.add_book_to_db(title,price,author,pages,image_name+image_extension,
-        publisher,description,db.get_category_id_by_name(category))
+    db.add_book_to_db(title, price, author, pages, image_name+image_extension,
+                      publisher, description,
+                      db.get_category_id_by_name(category))
 
-    #return HttpResponseRedirect('index.html') 
+    # return HttpResponseRedirect('index.html')
     return HttpResponse(result)
+
 
 @csrf_exempt
 def get_categories(request):
@@ -135,43 +144,51 @@ def get_categories(request):
     list_of_categories = db.get_categories()
     return HttpResponse(list_of_categories)
 
+
 @csrf_exempt
 def show_book(request):
-    db=DBController()
+    db = DBController()
     list_of_books = db.show_book()
     return HttpResponse(list_of_books)
+
 
 @csrf_exempt
 def show_product(request):
     title = request.POST['title']
-    db=DBController()
+    db = DBController()
     book_id = db.get_book_id_by_title(title)
     book = db.get_book_by_id(book_id)
-    list_of_book =[book.book_title,book.book_price,book.book_author,book.book_pages]
-    list_of_description = [book.book_publisher,book.book_description,
-    db.get_categorie_by_id(book.book_category),book.book_image]
+    list_of_book = [
+        book.book_title, book.book_price, book.book_author, book.book_pages]
+    list_of_description = [book.book_publisher, book.book_description,
+                           db.get_categorie_by_id(book.book_category),
+                           book.book_image]
     list_of_book.extend(list_of_description)
-    list_of_book_description = [str(book_element) + "," for book_element in list_of_book]
+    list_of_book_description = [
+        str(book_element) + "," for book_element in list_of_book]
     return HttpResponse(list_of_book_description)
+
 
 @csrf_exempt
 def like_book(request):
-        db = DBController()
-        user_id = request.session['user_id']
-        category_name = request.POST['category']
-        book_title = request.POST['title']
-        is_added_in_user_liked = db.insert_into_user_liked_books(user_id,book_title,category_name)
-        return HttpResponse(is_added_in_user_liked)
+    db = DBController()
+    user_id = request.session['user_id']
+    category_name = request.POST['category']
+    book_title = request.POST['title']
+    is_added_in_user_liked = db.insert_into_user_liked_books(
+        user_id, book_title, category_name)
+    return HttpResponse(is_added_in_user_liked)
+
 
 @csrf_exempt
 def buy_book(request):
-    db=DBController()
+    db = DBController()
     try:
         user_id = request.session['user_id']
         book_title = request.POST['title']
-        db.insert_into_user_bought(user_id,book_title)
+        db.insert_into_user_bought(user_id, book_title)
         return HttpResponse('True')
-    except (cx_Oracle.IntegrityError,KeyError):
+    except (cx_Oracle.IntegrityError, KeyError):
         return HttpResponse('False')
 
 
@@ -185,9 +202,10 @@ def is_supervisor(request):
     except KeyError:
         return HttpResponse('False')
 
+
 @csrf_exempt
 def changeProfile(request):
-    db=DBController()
+    db = DBController()
     try:
         user_id = request.session['user_id']
         email = request.POST['email']
@@ -198,7 +216,7 @@ def changeProfile(request):
         result = User.is_password_correct(password)
         if password != repeated_pass:
             return HttpResponse('Password don\'t match')
-        db.change_user(user_id,password,email,address,phone)
+        db.change_user(user_id, password, email, address, phone)
         return HttpResponseRedirect('index.html')
     except IncorrectPasswordException:
         return HttpResponse('Incorrect Password')
@@ -208,7 +226,7 @@ def changeProfile(request):
 
 @csrf_exempt
 def boughtBooks(request):
-    db=DBController()
+    db = DBController()
     try:
         user_id = request.session['user_id']
         list_of_books = db.show_bought_books_by_user(user_id)
@@ -216,20 +234,23 @@ def boughtBooks(request):
     except KeyError:
         return HttpResponseRedirect('index.html')
 
+
 @csrf_exempt
 def wantEmail(request):
     want_email = request.POST['want_email']
     user_id = request.session['user_id']
     db = DBController()
-    db.update_sending_email(user_id,want_email)
+    db.update_sending_email(user_id, want_email)
     return HttpResponse(True)
+
 
 @csrf_exempt
 def get_books_from_category(request):
-    category_name=request.POST['category'] 
-    db=DBController()
+    category_name = request.POST['category']
+    db = DBController()
     list_of_books = db.show_books_for_category(category_name)
     return HttpResponse(list_of_books)
+
 
 @csrf_exempt
 def searchCategory(request):

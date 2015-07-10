@@ -1,50 +1,55 @@
 <html>
-	<head>
-       <title>Buy the book! </title>
-       {% load staticfiles %}
-		<script src="{% static "js/jquery.min.js" %}"></script>
-		<script src="{% static "js/books.js"%}"></script>
-	</head>
-
-<body onload="getBookInfo()">	
-
-<h1 id="th" align="center"></h1>
-
-<div>
-<div style="float:left;padding-left: 4cm;">
-
-	<p align="center">
-	<b>Book title : <i id="title"></i></b></p>
-	<p align="center">
-	<b>Price : <i id="price"></i></b></p>
-	<p align="center">
-	<b>Author : <i id="author"></i></b></p>
-	<p align="center">
-	<b>Pages : <i id="pages"></i></b></p>
-	<p align="center">
-	<b>Publisher : <i id="publisher"></i></b></p>
-	<p align="center">
-	<b>Description : <i id="description"></i></b></p>
-	<p align="center">
-	<b>Category : <i id="category"></i></b></p>
-</div>
-<br><br><br>
-<div style="padding-left: 4cm;margin-top:-1.5cm" >
-	<p id="image" align="center"></p>
-</div>
-
-</div>
-<div align="center" id="buy">
-	<p>
-	<b>Price : <i id="the_price"></i></b></p>
-	<p>
-	<b>Transport : <i id="transport"></i></b></p>
-	<p>
-	<b>Total : <i id="total"></i></b></p>
-	<p id="quote">You will receive the book on the address provided in 1-3 days! Payment is on delivery!</p>
-	<button id="buyButton" style="width: 10em;  height: 2em;" onclick="buyBook()">Buy!</button>
-	<a href="/index.html" ><input type="button" value="Back to homepage!" style="width: 11em;  height: 2em;"/></a>
-	<p id="result"></p>
-</div>
-</body>
+   <head>
+      <title>Buy the book! </title>
+      {% load staticfiles %}
+      <script src="{% static "js/jquery.min.js" %}"></script>
+      <script src="{% static "js/books.js"%}"></script>
+   </head>
+   <body onload="getBookInfo()">
+      <h1 id="th" align="center"></h1>
+      <div>
+         <div style="float:left;padding-left: 4cm;">
+            <p align="center">
+               <b>Book title : <i id="title"></i></b>
+            </p>
+            <p align="center">
+               <b>Price : <i id="price"></i></b>
+            </p>
+            <p align="center">
+               <b>Author : <i id="author"></i></b>
+            </p>
+            <p align="center">
+               <b>Pages : <i id="pages"></i></b>
+            </p>
+            <p align="center">
+               <b>Publisher : <i id="publisher"></i></b>
+            </p>
+            <p align="center">
+               <b>Description : <i id="description"></i></b>
+            </p>
+            <p align="center">
+               <b>Category : <i id="category"></i></b>
+            </p>
+         </div>
+         <br><br><br>
+         <div style="padding-left: 4cm;margin-top:-1.5cm" >
+            <p id="image" align="center"></p>
+         </div>
+      </div>
+      <div align="center" id="buy">
+         <p>
+            <b>Price : <i id="the_price"></i></b>
+         </p>
+         <p>
+            <b>Transport : <i id="transport"></i></b>
+         </p>
+         <p>
+            <b>Total : <i id="total"></i></b>
+         </p>
+         <p id="quote">You will receive the book on the address provided in 1-3 days! Payment is on delivery!</p>
+         <button id="buyButton" style="width: 10em;  height: 2em;" onclick="buyBook()">Buy!</button>
+         <a href="/index.html" ><input type="button" value="Back to homepage!" style="width: 11em;  height: 2em;"/></a>
+         <p id="result"></p>
+      </div>
+   </body>
 </html>
