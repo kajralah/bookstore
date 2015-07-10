@@ -3,13 +3,16 @@ STATIC_URL = '/static/'
 function go_to_home_page(){
 	window.location.href = "\index.html";
 }
+function go_to_error_page(){
+		window.location.href = "\errorLoginPage.html";
+}
 
 function signIn() {
 		$.post("http://localhost:8000/login/", {'name':$("#username").val(),
 				'password':$("#password").val(),'check':document.getElementById("remember").checked,'csrfmiddlewaretoken':$('#csrfmiddlewaretoken').val()},
 				function(data){
 					if(data == 'Error login'){
-						window.location.load("\errorLoginPage.html")
+						go_to_error_page()
 					}
 					else if(data == 'ADMIN'){
 						$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" id=\"login\"><ul class=\"nav navbar-nav navbar-right\">"+
@@ -57,19 +60,6 @@ function logout(){
 				}
 			);/*  END of POST request*/
 		}/*END of logout*/
-
-function loadProfile(){
-		$.post("http://localhost:8000/isLoggedUser/", {},
-			function(data){
-				if(data === 'False'){
-					go_to_home_page();
-				}
-				else{
-					profile();
-				}
-			}
-		);
-}
 
 
 function profile() {
@@ -157,6 +147,20 @@ function showBook(){
 )//end of post
 }//show_book
 
+function loadProfile(){
+		$.post("http://localhost:8000/isLoggedUser/", {},
+			function(data){
+				if(data === 'False'){
+					go_to_home_page();
+				}
+				else{
+					profile();
+				}
+			}
+		);
+}
+
+
 function addNewBook(){
 	$.post("http://localhost:8000/is_supervisor/", {},
 		function(data){
@@ -227,3 +231,13 @@ function boughtBooks(){
 			}
 );/*END of post */
 }/*END of boughtBooks */
+
+function loadPage(){
+$.post("http://localhost:8000/isLoggedUser/", {},
+			function(data){
+				if(data === 'False'){
+					go_to_home_page();
+				}
+			}
+		);
+}

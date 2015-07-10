@@ -152,16 +152,12 @@ def show_product(request):
 
 @csrf_exempt
 def like_book(request):
-    db = DBController()
-    try:
+        db = DBController()
         user_id = request.session['user_id']
         category_name = request.POST['category']
         book_title = request.POST['title']
-        db.insert_into_user_liked_books(user_id,book_title)
-        db.insert_into_liked_categories(user_id,category_name)
-        return HttpResponse('True')
-    except (cx_Oracle.IntegrityError,KeyError):
-        HttpResponse('False')
+        is_added_in_user_liked = db.insert_into_user_liked_books(user_id,book_title,category_name)
+        return HttpResponse(is_added_in_user_liked)
 
 @csrf_exempt
 def buy_book(request):
@@ -215,3 +211,11 @@ def boughtBooks(request):
         return HttpResponse(list_of_books)
     except KeyError:
         return HttpResponseRedirect('index.html')
+
+@csrf_exempt
+def wantEmail(request):
+    want_email = request.POST['want_email']
+    user_id = request.session['user_id']
+    db = DBController()
+    db.update_sending_email(user_id,want_email)
+    return HttpResponse(True)

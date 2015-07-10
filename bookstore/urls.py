@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^changeProfile',changeProfile),
     url(r'^boughtBooks.html',TemplateView.as_view(template_name='boughtBooks.html')),
     url(r'^boughtBooks',boughtBooks),
+    url(r'^wantEmail',wantEmail),
 ]

@@ -45,10 +45,16 @@
                 $.post("http://localhost:8000/likeProduct",{'category':category,'title':title},
                     function(data){
                         if(data === 'True'){
+                            $('#likeInfo').append("<div class=\"email_div\">")
                             $('#likeInfo').append("Thank you for liking !");
+                            $('#likeInfo').append("Do you want to receive emails for new books in this category? ");
+                            $('#likeInfo').append("<button onclick=\"enableEmails()\">Yes</button>");
+                            $('#likeInfo').append("<button onclick=\"disableEmails()\">No</button>");
+                            $('#likeInfo').append("</div>")
+                            $('#likeInfo').append("<div class=\"result\"></div>")
                             $('#likeInfo').append("<a href=\"\index.html\"> Back to homepage!</a>");
                         }
-                        else{
+                        else if (data==='False'){
                             $('#likeInfo').append("You have already liked it!");
                             $('#likeInfo').append("<a href=\"\index.html\"> Back to homepage!</a>");
                         }
@@ -92,3 +98,19 @@ function go_to_home_page(){
                     }
                 );
         }
+function enableEmails(){
+ $.post("http://localhost:8000/wantEmail",{'want_email':'T'},
+                    function(data){
+                        $('.result').append("Thanks!")
+                  }
+                );
+
+}
+
+function disableEmails(){
+    $.post("http://localhost:8000/wantEmail",{'want_email':'F'},
+                    function(data){
+                        $('.result').append("Thanks!")
+                    }     
+                );
+}

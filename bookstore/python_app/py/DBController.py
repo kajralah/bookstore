@@ -23,12 +23,13 @@ GET_BOOK_FOR_SHOW ='SELECT BOOK_TITLE,BOOK_PRICE,BOOK_IMG FROM BOOK'
 GET_BOOK_ID_BY_NAME='SELECT BOOK_ID FROM BOOK WHERE BOOK_TITLE LIKE :book_title'
 GET_BOOK_BY_ID='SELECT * FROM BOOK WHERE BOOK_ID=:book_id'
 GET_CATEGORIE_NAME_BY_ID = 'SELECT CATEGORY_NAME FROM CATEGORIES WHERE CATEGORY_ID LIKE :category_id'
-INSERT_LIKED_CATEGORY = 'INSERT INTO USER_LIKED_CATEGORIES(USER_ID,CATEGORY_ID) VALUES(:user_id,:category_id)'
+INSERT_LIKED_CATEGORY = 'INSERT INTO USER_LIKED_CATEGORIES(USER_ID,CATEGORY_ID,USER_WANT_EMAIL) VALUES(:user_id,:category_id,:want_email)'
 LIKED_CATEGORIES = 'SELECT CATEGORY_ID FROM USER_LIKED_CATEGORIES WHERE USER_ID=:user_id AND CATEGORY_ID =:category_id' 
 INSERT_LIKED_BOOKS='INSERT INTO USER_LIKED_BOOKS(USER_ID,BOOK_ID) VALUES(:user_id,:book_id)'
 INSERT_BOUGHT_BOOKS = 'INSERT INTO USER_BOUGHT(USER_ID,BOOK_ID,BUY_DATE) VALUES(:user_id,:book_id,CURRENT_TIMESTAMP)'
 IS_SUPERVISOR = 'SELECT IS_SUPERVISOR FROM USERS WHERE USER_ID =:user_id'
 GET_USERS_BOUGHT_BOOKS = 'SELECT * FROM BOOK NATURAL JOIN (SELECT BOOK_ID,BUY_DATE FROM USER_BOUGHT WHERE USER_ID = :user_id)'
+UPDATE_USER_WANT_EMAIL= "UPDATE USER_LIKED_CATEGORIES SET USER_WANT_EMAIL =:wants_email where user_id =:user_id"
 
 class DBController:
 
@@ -240,27 +241,33 @@ class DBController:
     #return true if category is added in user_liked_category
     #return false if user already liked this category
     def insert_into_liked_categories(self,user_id,category_name):
-        db_connection = self.__connect_to_db()
-        cur = db_connection.cursor()
-        if self.check_for_liked_categories(user_id,category_name) is False:
-            cur.execute(INSERT_LIKED_CATEGORY,user_id = user_id,category_id=db.get_category_id_by_name(category_name))
-            db_connection.commit()
-            cur.close()
-            db_connection.close()
-            return True
-        else:
-            return False
+            db_connection = self.__connect_to_db()
+            cur = db_connection.cursor()
+            category_id = db.get_category_id_by_name(category_name)
+            if self.check_for_liked_categories(user_id,category_name) is False:
+                cur.execute(INSERT_LIKED_CATEGORY,user_id = user_id,category_id=category_id,want_email='T')
+                db_connection.commit()
+                cur.close()
+                db_connection.close()
 
     #return True if book_id is added in user_liked_books
-    def insert_into_user_liked_books(self,user_id,book_title):
-        db_connection = self.__connect_to_db()
-        cur = db_connection.cursor()
-        book_id = self.get_book_id_by_title(book_title)
-        cur.execute(INSERT_LIKED_BOOKS,user_id=user_id,book_id=book_id)
-        db_connection.commit()
-        cur.close()
-        db_connection.close()
-        return True
+    def insert_into_user_liked_books(self,user_id,book_title,category_name):
+        result =''
+        try:
+            db_connection = self.__connect_to_db()
+            cur = db_connection.cursor()
+            db.insert_into_liked_categories(user_id,category_name)
+            book_id = self.get_book_id_by_title(book_title)
+            cur.execute(INSERT_LIKED_BOOKS,user_id=user_id,book_id=book_id)
+            db_connection.commit()
+            result= True
+            return result
+        except Exception as e:
+            result= str(e)
+            return result
+        finally:
+            cur.close()
+            db_connection.close()
 
 
     def insert_into_user_bought(self,user_id,book_title):
@@ -304,3 +311,16 @@ class DBController:
         cur.close()
         db_connection.close()
         return list_of_book
+
+    def update_sending_email(self,user_id,wants_email):
+        db_connection = self.__connect_to_db()
+        cur = db_connection.cursor()
+        cur.execute(UPDATE_USER_WANT_EMAIL,wants_email=wants_email,user_id=user_id)
+        db_connection.commit()
+        cur.close()
+        db_connection.close()
+        return True
+
+
+db = DBController()
+print(db.insert_into_liked_categories(42,'ROMANCE'))
