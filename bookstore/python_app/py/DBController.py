@@ -12,11 +12,13 @@ class DBController:
     def __init__(self):
         self.con = None
 
+    # connecting to the database with 
+    # the given DB_connection parameters
     def __connect_to_db(self):
         con = cx_Oracle.connect(DB_connection)
         return con
 
-    # throws existingUserException() and cx_Oracle.IntegrityError
+    # throws ExistingUserException()
     # adding User in Db or throw exception
     def add_user_to_db(self, username, password, email, address, phone):
         if self.return_existing_user(username, password) is None:
@@ -31,6 +33,8 @@ class DBController:
         else:
             raise ExistingUserException()
 
+    # returns user_id if we have result from the query
+    # returns None otherwise
     def get_user_id(self, username, password):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -44,6 +48,8 @@ class DBController:
         cur.close()
         db_connection.close()
 
+    # returns new User if we have user with this id
+    # returns None otherwise
     def return_user_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -61,8 +67,8 @@ class DBController:
                 db_connection.close()
                 return None
 
-    # return None if there is not such user or returns the User if there is
-    # such user
+    # returns new User if there is user with this username and password
+    # return None otherwise
     def return_existing_user(self, username, password):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -80,9 +86,7 @@ class DBController:
                 db_connection.close()
                 return None
 
-# the password is checked and the existing of
-# the user is checked before invoking this function
-# returns True if user is changed else raise cx_ORacle.IntegrityError
+    # returns True if user is changed
     def change_user(self, user_id, password, email, address, phone):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -93,7 +97,7 @@ class DBController:
         db_connection.close()
         return True
 
-    # return True if added else raise cx_oracle integrity error
+    # return True if we added the book in the database
     def add_book_to_db(self, book_title, book_price, book_author,
                        book_pages, book_image, book_publisher,
                        book_description, category_id):
@@ -109,6 +113,7 @@ class DBController:
         db_connection.close()
         return True
 
+    # returns the category_id for the given category_name
     def get_category_id_by_name(self, category_name):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -121,6 +126,7 @@ class DBController:
         db_connection.close()
         return category_id
 
+    # returns the number of liked product for the user with this user_id
     def number_of_liked_product(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -133,6 +139,7 @@ class DBController:
         db_connection.close()
         return number_of_liked_products
 
+    # returns the number of bought items for the user with this user_id
     def number_of_bought_items(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -145,6 +152,7 @@ class DBController:
         db_connection.close()
         return number_of_bought_item
 
+    # getting tuple of all categories for showing them in the menu
     def get_categories(self):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -158,6 +166,9 @@ class DBController:
         db_connection.close()
         return tuple(list_of_categories)
 
+    # getting information for all available books in the database
+    # for showing them in the main page
+    # returns list of the books
     def show_book(self):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -171,6 +182,7 @@ class DBController:
         db_connection.close()
         return list_of_book
 
+    # getting the book_id by given book title
     def get_book_id_by_title(self, title):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -183,6 +195,8 @@ class DBController:
         db_connection.close()
         return book_id
 
+    # getting the book information from book id
+    # returns new Book with that id
     def get_book_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -195,6 +209,8 @@ class DBController:
         db_connection.close()
         return book
 
+    # getting the category name by the category id
+    # returns category name
     def get_categorie_by_id(self, id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -207,7 +223,7 @@ class DBController:
         return category_name
 
     # Returns False if the user doesn't like yet this category
-    # else returns the category_id
+    # returns the category_id otherwise
     def check_for_liked_categories(self, user_id, category_name):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -237,7 +253,9 @@ class DBController:
             cur.close()
             db_connection.close()
 
-    # return True if book_id is added in user_liked_books
+    # adding book id in the user_liked_books and adding the category
+    # if the user haven't liked this category yet
+    # return False if we can't add the book
     def insert_into_user_liked_books(self, user_id, book_title, category_name):
         result = ''
         try:
@@ -250,12 +268,14 @@ class DBController:
             result = True
             return result
         except Exception as e:
-            result = str(e)
+            result = False
             return result
         finally:
             cur.close()
             db_connection.close()
 
+    # adding book_id in the user bought information
+    # returns True if it is added
     def insert_into_user_bought(self, user_id, book_title):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -267,7 +287,8 @@ class DBController:
         db_connection.close()
         return True
 
-    # return True if is supervisor else False
+    # return True if this user with this user_id is supervisor
+    # retun False otherwise
     def is_supervisor(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -282,6 +303,8 @@ class DBController:
         db_connection.close()
         return is_supervisor
 
+    # getting bought books for current user with this user_id
+    # return list of bought books by this user
     def show_bought_books_by_user(self, user_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -298,6 +321,8 @@ class DBController:
         db_connection.close()
         return list_of_book
 
+    # updating information about user wants or not to receive email
+    # returns True if update is done
     def update_sending_email(self, user_id, wants_email):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -308,6 +333,9 @@ class DBController:
         db_connection.close()
         return True
 
+    # getting all emails from the users that like the
+    # category with this category id
+    # returns list of the emails
     def get_emails_for_sending_msg(self, category_id):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -321,6 +349,9 @@ class DBController:
         db_connection.close()
         return list_of_emails
 
+    # sending email to all users that like this category
+    # and want to receive emails
+    # don't return anything
     def send_emails(self, the_message, category_id):
         import smtplib
         gmail_user = "bookstorebulgaria@gmail.com"
@@ -343,6 +374,9 @@ class DBController:
         except:
             pass
 
+    # getting books from certain category
+    # with this category name
+    # returns list of the books
     def show_books_for_category(self, category_name):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
@@ -357,6 +391,8 @@ class DBController:
         db_connection.close()
         return list_of_book
 
+    # getting information about what is been searched for
+    # returns list of books which title is like the seached word
     def show_search_book(self, searched_book):
         db_connection = self.__connect_to_db()
         cur = db_connection.cursor()
