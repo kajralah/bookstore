@@ -17,7 +17,7 @@ function signIn() {
 			else if(data == 'ADMIN'){
 				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" id=\"login\"><ul class=\"nav navbar-nav navbar-right\">"+
 				"<li><a role=\"button\" href=\"newBook.html\"><i class=\"glyphicon glyphicon-user\"></i> Add book</a>"+
-				"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>")
+				"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout </a></li> </ul></div>");
 			}
 			else if(data == 'false'){
 				go_to_home_page();
@@ -25,7 +25,7 @@ function signIn() {
 			else{
 				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
 				"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Profile</a>"+
-				"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout</a></li> </ul></div>")
+				"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout</a></li> </ul></div>");
 			}	
 		}
 	);/*  END of POST request*/
@@ -61,11 +61,26 @@ function logout(){
 	);/*  END of POST request*/
 }/*END of logout*/
 
+function checkIfUserIsActive() {
+	$.post("http://localhost:8000/isLoggedUser/", {},
+		function(data){
+			if (data=== 'False'){
+				return;
+			}
+			else{
+				$('#navbar-collapse').empty().html("<div class = \"navbar-collapse collapse\" ><ul class=\"nav navbar-nav navbar-right\">"+
+				"<li><a role=\"button\" href=\"profile-settings.html\"><i class=\"glyphicon glyphicon-user\"></i> Profile</a>"+
+				"</li><li><a  onclick=\"logout()\"><i class=\"glyphicon glyphicon-lock\"></i> Logout</a></li> </ul></div>"
+				);
+			}
+		}
+	);/*  END of POST request*/
+}/*END of register*/
 
 function profile() {
 	$.post("http://localhost:8000/profile/", {},
 		function(data){
-			if (data=='You\'re not logged in'){
+			if (data==='You\'re not logged in'){
 				alert(data);
 				go_to_home_page();
 			}
@@ -80,7 +95,7 @@ function profile() {
 function liked_products(){
 	$.post("http://localhost:8000/liked/", {},
 		function(data){
-			if (data=='You\'re not logged in'){
+			if (data==='You\'re not logged in'){
 				go_to_home_page();
 			}
 			else{
@@ -107,12 +122,13 @@ function categories(){
 }
 
 function All(){
+	checkIfUserIsActive();
 	categories();
 	showBook();
 }
 
 function showing_books(data){
-	if(data == '' || data == null){
+	if(data === '' || data === null){
 		return;
 	}
 	var values = data.split('),');

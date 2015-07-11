@@ -53,8 +53,8 @@ class User:
                 has_lower_case = True
             if index.isdigit():
                 has_digit = True
-        if has_upper_case is True and has_lower_case is True
-        and has_digit is True and len(password) > 6:
-            return True
-        else:
-            return False
+        if has_upper_case is True and has_lower_case is True:
+            if has_digit is True and len(password) > 6:
+                return True
+            else:
+                return False
