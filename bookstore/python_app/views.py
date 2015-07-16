@@ -63,7 +63,7 @@ def logout(request):
 
 
 @csrf_exempt
-def isLoggedUser(request):
+def is_logged_user(request):
     try:
         user_id = request.session['user_id']
         return HttpResponse(user_id)
@@ -204,7 +204,7 @@ def is_supervisor(request):
 
 
 @csrf_exempt
-def changeProfile(request):
+def change_profile(request):
     db = DBController()
     try:
         user_id = request.session['user_id']
@@ -225,7 +225,7 @@ def changeProfile(request):
 
 
 @csrf_exempt
-def boughtBooks(request):
+def bought_books(request):
     db = DBController()
     try:
         user_id = request.session['user_id']
@@ -236,7 +236,7 @@ def boughtBooks(request):
 
 
 @csrf_exempt
-def wantEmail(request):
+def want_email(request):
     want_email = request.POST['want_email']
     user_id = request.session['user_id']
     db = DBController()
@@ -253,7 +253,7 @@ def get_books_from_category(request):
 
 
 @csrf_exempt
-def searchCategory(request):
+def search_category(request):
     what_to_search_for = request.POST['whatToSearchFor']
     db = DBController()
     list_of_books = db.show_search_book(what_to_search_for)

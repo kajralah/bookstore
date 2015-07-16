@@ -27,13 +27,13 @@ urlpatterns = [
     url(r'^buyProduct',buy_book),
     url(r'^buyBook/$',TemplateView.as_view(template_name='buyingBook.html')),
     url(r'^is_supervisor',is_supervisor),
-    url(r'^isLoggedUser',isLoggedUser),
+    url(r'^isLoggedUser',is_logged_user),
     url(r'^changeProfile.html',TemplateView.as_view(template_name='changeProfile.html')),
-    url(r'^changeProfile',changeProfile),
+    url(r'^changeProfile',change_profile),
     url(r'^boughtBooks.html',TemplateView.as_view(template_name='boughtBooks.html')),
-    url(r'^boughtBooks',boughtBooks),
-    url(r'^wantEmail',wantEmail),
+    url(r'^boughtBooks',bought_books),
+    url(r'^wantEmail',want_email),
     url(r'^category',get_books_from_category),
-    url(r'^searchCategory',searchCategory),
+    url(r'^searchCategory',search_category),
     
 ]

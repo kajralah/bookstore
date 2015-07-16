@@ -10,7 +10,7 @@
       <script src="{% static "js/login_register.js"%}"></script>
       <script src="{% static "js/bootstrap.min.js" %}"></script>
    </head>
-   <body onload="All()">
+   <body onload="all()">
       <!-- Navigation Bar -->
       <div class="navbar navbar-inverse navbar-static-top">
          <div class="container -fluid">
@@ -18,7 +18,7 @@
                <input type="button" class="btn navbar-brand navbar-btn" data-target=".navbar-collapse" onclick='go_to_home_page()' id="index_button"/>
             </div>
             <!--Nav form with Search -->
-            <form class="navbar-form navbar-left form-inline" onsubmit="searchCategory()">
+            <form class="navbar-form navbar-left form-inline" onsubmit="search_category()">
                <div class= "form-group">
                   <input type="text" name="whatToSearchFor" class="form-control" placeholder="Search book name" id="search">
                </div>
@@ -47,7 +47,7 @@
                            <input style="float: left; margin-right: 10px;" type="checkbox" name="remember-me" id="remember" value="1">
                            Remember me</label>
                            <input type="hidden" name="csrfmiddlewaretoken" value="$csrf_token"/>
-                           <input class="btn btn-primary btn-block" onclick="signIn()"type="button" id="user-btn" value="Вход"/>
+                           <input class="btn btn-primary btn-block" onclick="sign_in()"type="button" id="user-btn" value="Вход"/>
                         </form>
                      </div>
                   </li>

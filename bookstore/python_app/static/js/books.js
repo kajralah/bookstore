@@ -1,4 +1,4 @@
-function getParameter(paramName) {
+function get_parameter(paramName) {
     var searchString = window.location.search.substring(1), i, val, params = searchString.split("&");
     
     for (var i = 0; i < params.length; i++) {
@@ -10,13 +10,13 @@ function getParameter(paramName) {
     return null;
 }
 
-function getUrlData() {
-    var parameter = getParameter("title");
+function get_url_data() {
+    var parameter = get_parameter("title");
     return parameter;
 }
 
-function getBookInfo(){
-    var parameter = getUrlData();
+function get_book_info(){
+    var parameter = get_url_data();
     $.post("http://localhost:8000/showProduct",{'title':parameter},
         function(data){
             var values = data.split(',');
@@ -41,7 +41,7 @@ function getBookInfo(){
     );
 }
 
-function isUserLogged(callback){
+function is_user_logged(callback){
     $.post("http://localhost:8000/isLoggedUser/", {},
         function(data){
             callback(data);
@@ -49,8 +49,8 @@ function isUserLogged(callback){
     );
 }
 
-function Like(){            
-    isUserLogged(function(data) {
+function like(){            
+    is_user_logged(function(data) {
         if(data ==='False'){
             alert('You\'re not logged in');
         }
@@ -83,12 +83,12 @@ function go_to_home_page(){
     window.location.href = "/index.html";
 }
 
-function Buy(){
+function buy(){
         var title = $('#title').html();
         window.open("http://localhost:8000/buyBook?title="+title);
 }
 
-function buyBook(){
+function buy_book(){
     $.post("http://localhost:8000/is_supervisor",{},
         function(data){
             if(data === 'False'){
@@ -96,14 +96,14 @@ function buyBook(){
                 go_to_home_page();                     
             }
             else{
-                buyBookAsUser();
+                buy_book_as_user();
             }
         }
     );
 }
 
-function buyBookAsUser(){
-    var parameter = getUrlData();
+function buy_book_as_user(){
+    var parameter = get_url_data();
     $.post("http://localhost:8000/buyProduct",{'title':parameter},
         function(data){
             if(data=='True'){
@@ -118,7 +118,7 @@ function buyBookAsUser(){
     );
 }
 
-function enableEmails(){
+function enable_emails(){
     $.post("http://localhost:8000/wantEmail",{'want_email':'T'},
         function(data){
             $('.result').append("Thanks!")
@@ -126,7 +126,7 @@ function enableEmails(){
     );
 }
 
-function disableEmails(){
+function disable_emails(){
     $.post("http://localhost:8000/wantEmail",{'want_email':'F'},
         function(data){
             $('.result').append("Thanks!")

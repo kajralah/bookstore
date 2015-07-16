@@ -7,7 +7,7 @@ function go_to_error_page(){
 		window.location.href = "\errorLoginPage.html";
 }
 
-function signIn() {
+function sign_in() {
 	$.post("http://localhost:8000/login/", {'name':$("#username").val(),
 		   'password':$("#password").val(),'check':document.getElementById("remember").checked,'csrfmiddlewaretoken':$('#csrfmiddlewaretoken').val()},
 		function(data){
@@ -61,7 +61,7 @@ function logout(){
 	);/*  END of POST request*/
 }/*END of logout*/
 
-function checkIfUserIsActive() {
+function check_if_user_is_active() {
 	$.post("http://localhost:8000/isLoggedUser/", {},
 		function(data){
 			if (data=== 'False'){
@@ -121,10 +121,10 @@ function categories(){
 	);/*  END of POST request*/
 }
 
-function All(){
-	checkIfUserIsActive();
+function all(){
+	check_if_user_is_active();
 	categories();
-	showBook();
+	show_book();
 }
 
 function showing_books(data){
@@ -160,7 +160,7 @@ function category(category){
 	);
 }
 
-function showBook(){
+function show_book(){
 	$.post("http://localhost:8000/show_book/", {},
 		function(data){	
 			showing_books(data);
@@ -168,7 +168,7 @@ function showBook(){
 	);//end of post
 }//show_book
 
-function loadProfile(){
+function load_profile(){
 	$.post("http://localhost:8000/isLoggedUser/", {},
 		function(data){
 			if(data === 'False'){
@@ -181,21 +181,7 @@ function loadProfile(){
 	);
 }
 
-
-function addNewBook(){
-	$.post("http://localhost:8000/is_supervisor/", {},
-		function(data){
-			if(data === 'False'){
-				go_to_home_page();
-			}
-			else{
-				addCategories();
-			}
-		}
-	);/*END OF POST */
-}/*END OF addNewBook() */
-
-function addCategories(){
+function add_categories(){
 	$.post("http://localhost:8000/categories/", {},
 		function(data){			
 			// Remove the parentheses and whitespace
@@ -211,17 +197,30 @@ function addCategories(){
 	);/*  END of POST request*/
 }
 
+function add_new_book(){
+	$.post("http://localhost:8000/is_supervisor/", {},
+		function(data){
+			if(data === 'False'){
+				go_to_home_page();
+			}
+			else{
+				add_categories();
+			}
+		}
+	);/*END OF POST */
+}/*END OF addNewBook() */
 
-function setCategories(index){
+
+function set_categories(index){
 	$("#prod-categories-reg").append("<input type=\"text\" name=\"category-input\" value=\""+index+ "\" />	")
 }
 
-function showProduct(title){
+function show_product(title){
 	window.open("http://localhost:8000/books?title="+title);
 }
 
 
-function boughtBooks(){
+function bought_books(){
 	$.post("http://localhost:8000/boughtBooks/", {},
 		function(data){
 			if(data == '' || data == null){
@@ -248,7 +247,7 @@ function boughtBooks(){
 	);/*END of post */
 }/*END of boughtBooks */
 
-function loadPage(){
+function load_page(){
 	$.post("http://localhost:8000/isLoggedUser/", {},
 		function(data){
 			if(data === 'False'){
@@ -258,7 +257,7 @@ function loadPage(){
 	);
 }
 
-function searchCategory(){
+function search_category(){
 	var search = document.getElementById('search').value;
 	event.preventDefault();
 	$.post("http://localhost:8000/searchCategory/", {'whatToSearchFor':search},
