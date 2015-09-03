@@ -354,8 +354,8 @@ class DBController:
     # don't return anything
     def send_emails(self, the_message, category_id):
         import smtplib
-        gmail_user = "bookstorebulgaria@gmail.com"
-        gmail_pwd = "thebookstore"
+        gmail_user = "the_email"
+        gmail_pwd = "the_password"
         FROM = 'Bookstore'
         TO = self.get_emails_for_sending_msg(category_id)
         SUBJECT = "Bookstore - new book"
